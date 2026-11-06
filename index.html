@@ -3,42 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APAC — Administrador</title>
+<title>APAC — Ambulatório de Valença Centro</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* Fundo geral mais acinzentado e suave */
-  --bg:#eef1f5; 
-  --surface:#f8fafc; 
-  --surface-alt:#e2e8f0; 
-  --border:#cbd5e1; 
-  --border-strong:#94a3b8;
-  /* Textos suaves */
-  --text:#1e293b; 
-  --text-muted:#475569; 
-  --text-faint:#64748b; 
-  /* Azul institucional mais sóbrio */
-  --primary:#1e40af; 
-  --primary-hover:#1e3a8a;
-  --primary-light:#dbeafe; 
-  --primary-border:#93c5fd; 
-  --success:#047857; 
-  --success-light:#d1fae5;
-  --warning:#b45309; 
-  --warning-light:#fef3c7; 
-  --warning-border:#fcd34d; 
-  --danger:#b91c1c;
-  --danger-light:#fee2e2; 
-  --danger-border:#fca5a5; 
-  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
-  --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06); 
-  --shadow-lg:0 20px 25px -5px rgba(0,0,0,.1);
-  --radius-sm:4px; 
-  --radius:6px; 
-  --radius-lg:10px;
+  --bg:#eef1f5; --surface:#f8fafc; --surface-alt:#e2e8f0; --border:#cbd5e1; --border-strong:#94a3b8;
+  --text:#1e293b; --text-muted:#475569; --text-faint:#64748b;
+  --primary:#1e40af; --primary-hover:#1e3a8a; --primary-light:#dbeafe; --primary-border:#93c5fd;
+  --success:#047857; --success-light:#d1fae5; --warning:#b45309; --warning-light:#fef3c7; --warning-border:#fcd34d;
+  --danger:#b91c1c; --danger-light:#fee2e2; --danger-border:#fca5a5;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05); --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-lg:0 20px 25px -5px rgba(0,0,0,.1); --radius-sm:4px; --radius:6px; --radius-lg:10px;
 }
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
@@ -167,18 +145,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .detail-grid .lbl{color:var(--text-faint);font-size:11px;display:block;margin-bottom:1px}
 .detail-grid .val{color:var(--text);font-weight:500}
 
-/* ===== CONFIG ===== */
-.config-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
-.config-card h4{color:var(--text);margin-bottom:6px;font-size:14px;font-weight:600}
-.config-card p{font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6}
-.config-card code{background:var(--surface-alt);padding:2px 6px;border-radius:3px;font-size:12px;font-family:ui-monospace,Consolas,monospace;color:var(--text);border:1px solid var(--border)}
-.config-card.warn{background:var(--warning-light);border-color:var(--warning-border)}.config-card.warn h4{color:var(--warning)}
-.config-card.danger{background:var(--danger-light);border-color:var(--danger-border)}.config-card.danger h4{color:var(--danger)}
-.config-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap}
-.config-row .field{flex:1 1 300px}
-.checkbox-row{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;margin-bottom:10px;color:var(--text)}
-.checkbox-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--primary)}
-
 /* ===== TOAST ===== */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--radius);box-shadow:var(--shadow-lg);font-weight:500;font-size:13px;opacity:0;transform:translateY(20px);transition:all .25s;z-index:99999;max-width:400px;display:flex;align-items:center;gap:10px}
 .toast::before{content:'';width:6px;height:6px;border-radius:50%;background:#34d399;flex-shrink:0}
@@ -192,18 +158,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 </head>
 <body>
 
+<!-- ========================================================= -->
+<!-- TELA DE LOGIN (BLOQUEIO DE ACESSO) -->
+<!-- ========================================================= -->
+<div id="telaLogin" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#f8fafc;z-index:999999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="background:#ffffff;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.05);width:100%;max-width:380px;border:1px solid #e2e8f0;">
+    <div style="text-align:center;margin-bottom:30px;">
+      <div style="width:48px;height:48px;background:#1e40af;color:white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;margin:0 auto 15px auto;">SUS</div>
+      <h2 style="color:#0f172a;font-size:20px;margin:0 0 5px 0;font-weight:600;">Acesso Restrito</h2>
+      <p style="color:#64748b;font-size:13px;margin:0;">APAC - Ambulatório de Valença</p>
+    </div>
+    
+    <div style="margin-bottom:15px;">
+      <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:5px;">Usuário</label>
+      <input type="text" id="loginUser" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;outline:none;" placeholder="Digite seu usuário">
+    </div>
+    
+    <div style="margin-bottom:25px;">
+      <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:5px;">Senha</label>
+      <input type="password" id="loginPass" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;outline:none;" placeholder="Digite sua senha" onkeypress="if(event.key === 'Enter') fazerLogin()">
+    </div>
+    
+    <button onclick="fazerLogin()" style="width:100%;background:#1e40af;color:white;border:none;padding:12px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">Entrar no Sistema</button>
+    
+    <div id="loginErro" style="color:#dc2626;font-size:13px;text-align:center;margin-top:15px;display:none;font-weight:500;">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand">
       <div class="brand-mark">SUS</div>
       <div class="brand-text">
-        <h1>APAC · Administrador</h1>
-        <p>Ambulatório de Valença Centro</p>
+        <h1>APAC · Ambulatório de Valença Centro</h1>
+        <p>Laudo para solicitação e autorização de procedimento ambulatorial</p>
       </div>
     </div>
     <div class="topbar-status">
       <div class="status-item"><span class="status-dot"></span><span id="statusConexao">Sistema operacional</span></div>
-      <div class="status-item"><span class="status-dot"></span><span id="statusSync">Sincronização: desconectada</span></div>
+      <div class="status-item"><span class="status-dot"></span><span id="statusSync">Sincronização: ativa</span></div>
     </div>
   </div>
 </div>
@@ -218,10 +211,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
       <svg class="icon" viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
       Histórico <span class="badge" id="tabCount">0</span>
     </button>
-    <button class="tab" data-tab="config">
-      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Configurações
-    </button>
+    <!-- ABA DE CONFIGURAÇÕES OCULTA PARA A EQUIPE -->
   </nav>
 
   <div class="view active" id="view-form">
@@ -367,48 +357,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
       </div>
     </div>
   </div>
-
-  <div class="view" id="view-config">
-    <div class="section">
-      <div class="section-head"><h2>Configurações</h2></div>
-      <div class="section-body">
-        <div class="config-card warn" id="cardPendencias" style="display:none">
-          <h4>Dados pendentes de configuração</h4>
-          <p>Estes dados ainda precisam ser preenchidos no sistema:</p>
-          <ul id="listaPendencias" style="font-size:13px;padding-left:20px;line-height:1.9"></ul>
-        </div>
-        <div class="config-card">
-          <h4>Sincronização com Google Sheets</h4>
-          <p>Cole abaixo a URL do Web App publicado no Apps Script (termina em <code>/exec</code>).</p>
-          <div class="config-row">
-            <div class="field"><label>URL do Web App</label><input type="text" id="sheetsUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
-            <button class="btn btn-secondary" onclick="testarConexaoSheets()">Testar</button>
-            <button class="btn btn-primary" onclick="salvarSheetsUrl()">Salvar</button>
-          </div>
-          <label class="checkbox-row"><input type="checkbox" id="autoSyncCheckbox" onchange="toggleAutoSync(this.checked)"><span>Sincronizar automaticamente ao salvar</span></label>
-          <div style="margin-top:6px">
-            <button class="btn btn-secondary btn-sm" onclick="sincronizarTodosPendentes()">Enviar não sincronizadas</button>
-            <span id="syncStatus" style="font-size:12px;color:var(--text-muted);margin-left:10px"></span>
-          </div>
-        </div>
-        <div id="painelServidor"></div>
-        <div class="config-card">
-          <h4>Backup local</h4>
-          <p>Exporte um arquivo JSON com todas as APACs salvas neste navegador.</p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-secondary btn-sm" onclick="exportarHistoricoJSON()">Exportar backup</button>
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importBackup').click()">Importar backup</button>
-            <input type="file" id="importBackup" accept=".json" style="display:none" onchange="importarBackup(event)">
-          </div>
-        </div>
-        <div class="config-card danger">
-          <h4>Zona de perigo</h4>
-          <p>Apagar o histórico local não afeta a planilha na nuvem. Só faça isso depois de exportar um backup.</p>
-          <button class="btn btn-danger btn-sm" onclick="apagarTudo()">Apagar histórico local</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -430,7 +378,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 <div class="toast" id="toast"></div>
 
 <script>
-const MINHA_URL_SHEETS = ''; // O ADMINISTRADOR NÃO TEM URL CHUMBADA
+/* =========================================================
+   CONFIGURAÇÃO DE URL CHUMBADA (EQUIPE)
+   ========================================================= */
+const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbytHzOJuWZwCB221Hih4c00OHWM1r3mRsCsFXGFCC-0BkNKEAP2QS47M45VRR2siwdn/exec'; 
 
 const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531447', cnes_executante: '8531447', nome_executante: 'AMBULATORIO DE VALENCA CENTRO' };
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
@@ -478,7 +429,6 @@ document.querySelectorAll('[data-mask]').forEach(el=>{
   el.addEventListener('input',e=>e.target.value=mascaras[t](e.target.value));
 });
 
-/* ============ FORÇAR MAIÚSCULO E REMOVER ACENTOS ============ */
 document.querySelectorAll('.auto-upper').forEach(el => {
   el.addEventListener('input', (e) => {
     let v = e.target.value;
@@ -590,7 +540,7 @@ async function salvarNoHistorico(){
     dados._exportado=false;dados._sincronizado=false;
     h.unshift(dados);setHistorico(h);
     mostrarToast('APAC salva no histórico');
-    if(getSheetsUrl() && document.getElementById('autoSyncCheckbox').checked){ sincronizarComSheets(dados,'criar'); }
+    if(getSheetsUrl()){ sincronizarComSheets(dados,'criar'); }
   }
   localStorage.removeItem(RASC_KEY);
   novaApac();renderHistorico();
@@ -644,8 +594,10 @@ async function excluirDoHistorico(id){
 function mostrarAba(n){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===n));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${n}`));
-  if(n==='historico')renderHistorico();
-  if(n==='config'){renderPainelServidor();renderPendencias()}
+  if(n==='historico'){
+    renderHistorico();
+    setTimeout(renderHistorico, 50); // Força o desenho da tabela
+  }
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>mostrarAba(t.dataset.tab)));
 
@@ -785,19 +737,8 @@ function importarBackup(e){
 }
 
 function getSheetsUrl(){return MINHA_URL_SHEETS || localStorage.getItem(SHEETS_URL_KEY) || ''}
-function salvarSheetsUrl(){
-  const u=document.getElementById('sheetsUrl').value.trim();if(!u){mostrarToast('Cole a URL primeiro',true);return}
-  if(!/^https:\/\/script\.google\.com\/.*\/exec$/.test(u)){ if(!confirm('A URL não parece ser um Web App do Apps Script. Salvar mesmo assim?'))return; }
-  localStorage.setItem(SHEETS_URL_KEY,u);mostrarToast('URL salva');atualizarStatusTopbar();
-}
+function salvarSheetsUrl(){ localStorage.setItem(SHEETS_URL_KEY,u); }
 function toggleAutoSync(v){localStorage.setItem(AUTOSYNC_KEY,v?'1':'0')}
-
-async function testarConexaoSheets(){
-  const u=document.getElementById('sheetsUrl').value.trim()||getSheetsUrl();if(!u){mostrarToast('Cole a URL primeiro',true);return}
-  const st=document.getElementById('syncStatus');st.textContent='Testando...';
-  try{ const r=await fetch(u+'?acao=status');const d=await r.json(); if(d.ok){st.textContent='Conexão OK';mostrarToast('Conexão com Google Sheets OK')} else throw new Error(d.error||'resposta inesperada'); }
-  catch(e){st.textContent='Falha: '+e.message;mostrarToast('Falha: '+e.message,true)}
-}
 
 async function sincronizarComSheets(dados,acao){
   const url=getSheetsUrl();if(!url)return false;
@@ -806,68 +747,44 @@ async function sincronizarComSheets(dados,acao){
 }
 
 async function puxarDoSheets(){
-  const url=getSheetsUrl();if(!url)return;
-  try{ const r=await fetch(url+'?acao=listar');const data=await r.json(); if(!data.ok)throw new Error(data.error||'resposta inválida'); const rem=data.apacs||[];const loc=getHistorico(); const mapa=new Map(loc.map(a=>[a._id,a])); let add=0,atual=0; rem.forEach(r=>{const l=mapa.get(r._id); if(!l){loc.unshift(r);add++} else if(new Date(r._atualizado_em)>new Date(l._atualizado_em)){Object.assign(l,r);atual++}}); if(add||atual){setHistorico(loc);renderHistorico()} localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString()); }
-  catch(e){console.warn('Puxar falhou:',e)}
-}
-
-function atualizarStatusTopbar(){
   const url=getSheetsUrl();
-  const el=document.getElementById('statusSync');
-  if(el){ el.textContent = url ? 'Sincronização: ativa' : 'Sincronização: desconectada'; }
+  if(!url){ mostrarToast('URL do Sheets não configurada!', true); return; }
+  
+  mostrarToast('Buscando dados da nuvem...');
+  
+  try{ 
+    const r=await fetch(url+'?acao=listar');
+    const data=await r.json(); 
+    if(!data.ok)throw new Error(data.error||'resposta inválida'); 
+    
+    const rem=data.apacs||[];
+    const loc=getHistorico(); 
+    const mapa=new Map(loc.map(a=>[a._id,a])); 
+    let add=0,atual=0; 
+    
+    rem.forEach(r=>{
+      const l=mapa.get(r._id); 
+      if(!l){loc.unshift(r);add++} 
+      else if(new Date(r._atualizado_em)>new Date(l._atualizado_em)){Object.assign(l,r);atual++}
+    }); 
+    
+    if(add||atual){
+      setHistorico(loc);
+      renderHistorico();
+      mostrarToast(`Sincronizado! +${add} nova(s) e ${atual} atualizada(s).`);
+    } else {
+      mostrarToast('Tudo atualizado! Nenhuma APAC nova na nuvem.');
+    }
+    
+    localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString()); 
+  }
+  catch(e){
+    console.warn('Puxar falhou:',e);
+    mostrarToast('Erro ao sincronizar: ' + e.message, true);
+  }
 }
 
-async function sincronizarTodosPendentes(){
-  const url=getSheetsUrl();if(!url){mostrarToast('Configure a URL primeiro',true);return}
-  const h=getHistorico();const pend=h.filter(a=>!a._sincronizado);if(!pend.length){mostrarToast('Tudo já está sincronizado');return}
-  const st=document.getElementById('syncStatus');st.textContent=`Enviando ${pend.length}...`;
-  let ok=0;for(const ap of pend){if(await sincronizarComSheets(ap,'criar'))ok++}
-  st.textContent=`${ok}/${pend.length} sincronizada(s)`;mostrarToast(`${ok}/${pend.length} sincronizada(s)`);renderHistorico();
-}
-
-let timerAutoRefresh=null;
-function getAutoRefreshMin(){return parseInt(localStorage.getItem(AUTO_REFRESH_KEY)||'5',10)}
-function ativarModoServidor(){ localStorage.setItem(SERVIDOR_KEY,'1'); iniciarAutoRefresh(); executarBackupDiarioSeNecessario(); puxarDoSheets(); renderPainelServidor(); mostrarToast('Modo servidor ativado'); }
-function desativarModoServidor(){ localStorage.removeItem(SERVIDOR_KEY); if(timerAutoRefresh)clearInterval(timerAutoRefresh); renderPainelServidor(); mostrarToast('Modo servidor desativado'); }
-function iniciarAutoRefresh(){ if(timerAutoRefresh)clearInterval(timerAutoRefresh); const ms=getAutoRefreshMin()*60*1000; timerAutoRefresh=setInterval(()=>{ puxarDoSheets(); executarBackupDiarioSeNecessario(); },ms); }
-function executarBackupDiarioSeNecessario(){
-  if(localStorage.getItem(BACKUP_DIARIO_KEY)!=='1')return; const hoje=new Date().toISOString().slice(0,10); if(localStorage.getItem(ULTIMO_BACKUP_KEY)===hoje)return; const h=getHistorico();if(!h.length)return;
-  const blob=new Blob([JSON.stringify({gerado_em:new Date().toISOString(),total:h.length,apacs:h},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`backup_apac_${hoje}.json`;a.click();URL.revokeObjectURL(url);
-  localStorage.setItem(ULTIMO_BACKUP_KEY,hoje);mostrarToast(`Backup diário gerado · ${h.length} APAC(s)`);
-}
-
-function renderPainelServidor(){
-  const c=document.getElementById('painelServidor');if(!c)return;
-  const ativo=localStorage.getItem(SERVIDOR_KEY)==='1'; const backupAtivo=localStorage.getItem(BACKUP_DIARIO_KEY)==='1';
-  c.innerHTML=`
-    <div class="config-card">
-      <h4>Modo servidor 24h</h4>
-      <p>Mantém este computador sincronizado com o Google Sheets e faz backup automático diário. Ideal para o PC ligado 24 horas.</p>
-      <div style="font-weight:600;margin-bottom:10px;font-size:13px;color:${ativo?'var(--success)':'var(--text-faint)'}">${ativo?'Ativo · atualizando a cada '+getAutoRefreshMin()+' minutos':'Desativado'}</div>
-      <div id="servidorLastSync" style="font-size:12px;color:var(--text-muted);margin-bottom:14px">${localStorage.getItem(LAST_SYNC_KEY)?'Última sincronização: '+formatarDataHora(localStorage.getItem(LAST_SYNC_KEY)):'Nunca sincronizado'}</div>
-      <div class="config-row" style="margin-bottom:14px">
-        <div class="field" style="flex:0 0 160px"><label>Atualizar a cada (minutos)</label><input type="number" id="autoRefreshMin" min="1" max="60" value="${getAutoRefreshMin()}" onchange="localStorage.setItem('${AUTO_REFRESH_KEY}',this.value);if(localStorage.getItem('${SERVIDOR_KEY}')==='1')iniciarAutoRefresh();renderPainelServidor()"></div>
-        <label class="checkbox-row" style="flex:1 1 auto;margin-bottom:0"><input type="checkbox" ${backupAtivo?'checked':''} onchange="localStorage.setItem('${BACKUP_DIARIO_KEY}',this.checked?'1':'0')"><span>Backup automático diário</span></label>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${ativo?'<button class="btn btn-secondary btn-sm" onclick="desativarModoServidor()">Desativar</button>':'<button class="btn btn-primary btn-sm" onclick="ativarModoServidor()">Ativar</button>'}
-        <button class="btn btn-secondary btn-sm" onclick="puxarDoSheets()">Sincronizar agora</button>
-      </div>
-    </div>`;
-}
-
-function renderPendencias(){
-  const lista = document.getElementById('listaPendencias'); const card = document.getElementById('cardPendencias');
-  if(!lista) return; const pends = [];
-  Object.values(ESPECIALISTAS).forEach(esp => { if(!esp.cns) pends.push(`CNS de ${esp.nome} (${esp.especialidade})`); if(!esp.cbo) pends.push(`CBO de ${esp.especialidade}`); });
-  if(!pends.length){ if(card) card.style.display = 'none'; return; }
-  if(card) card.style.display = 'block'; lista.innerHTML = pends.map(p => `<li>${p}</li>`).join('');
-}
-
-function apagarTudo(){
-  if(!confirm('Apagar todo o histórico local? A planilha na nuvem não será afetada.'))return; if(!confirm('Última confirmação. Apagar tudo?'))return;
-  localStorage.removeItem(HIST_KEY);localStorage.removeItem(RASC_KEY); setHistorico([]);renderHistorico();mostrarToast('Histórico local apagado');
-}
+function atualizarStatusTopbar(){ const el=document.getElementById('statusSync'); if(el) el.textContent = 'Sincronização: ativa'; }
 
 let timerRasc=null;
 document.getElementById('apacForm').addEventListener('input',()=>{ clearTimeout(timerRasc); timerRasc=setTimeout(()=>localStorage.setItem(RASC_KEY,JSON.stringify(coletarDados())),800); });
@@ -875,11 +792,39 @@ document.getElementById('apacForm').addEventListener('input',()=>{ clearTimeout(
 let toastT=null;
 function mostrarToast(m,e=false){ const t=document.getElementById('toast');t.textContent=m;t.classList.toggle('error',e);t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3500); }
 
+/* =========================================================
+   SISTEMA DE LOGIN E SEGURANÇA
+   ========================================================= */
+const USUARIOS_SISTEMA = {
+  'digitador': 'apac2026',
+  'admin': 'admin123'
+};
+
+function fazerLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value.trim();
+  const erro = document.getElementById('loginErro');
+
+  if (USUARIOS_SISTEMA[user] && USUARIOS_SISTEMA[user] === pass) {
+    document.getElementById('telaLogin').style.display = 'none';
+    sessionStorage.setItem('apac_logado', 'sim');
+  } else {
+    erro.style.display = 'block';
+    document.getElementById('loginPass').value = '';
+  }
+}
+
+// Verifica sessão
+if (sessionStorage.getItem('apac_logado') === 'sim') {
+  document.getElementById('telaLogin').style.display = 'none';
+}
+
 (function init(){
-  const u=getSheetsUrl();if(u)document.getElementById('sheetsUrl').value=u;
-  document.getElementById('autoSyncCheckbox').checked=localStorage.getItem(AUTOSYNC_KEY)==='1';
-  atualizarStats();renderHistorico();renderPainelServidor();renderPendencias();atualizarStatusTopbar();
-  if(localStorage.getItem(SERVIDOR_KEY)==='1')iniciarAutoRefresh();
+  // Força sincronização automática (não há checkbox de config na tela)
+  localStorage.setItem(AUTOSYNC_KEY, '1');
+  
+  atualizarStats();renderHistorico();atualizarStatusTopbar();
+  
   if(localStorage.getItem(RASC_KEY)){
     setTimeout(()=>{
       if(confirm('Existe um rascunho não salvo. Deseja recuperá-lo?')){
