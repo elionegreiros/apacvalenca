@@ -757,13 +757,22 @@ async function puxarDoSheets(){
     let add=0,atual=0; 
     
     rem.forEach(r=>{
+      // ⬇️ BLINDAGEM: Converte todos os campos para texto para não quebrar no .replace
+      Object.keys(r).forEach(k => {
+        if (r[k] !== null && r[k] !== undefined) {
+          r[k] = String(r[k]);
+        } else {
+          r[k] = '';
+        }
+      });
+
       const l=mapa.get(r._id); 
       if(!l){loc.unshift(r);add++} 
       else if(new Date(r._atualizado_em)>new Date(l._atualizado_em)){Object.assign(l,r);atual++}
     }); 
     
-    setHistorico(loc);       // ⬅️ Força a atualização local
-    renderHistorico();       // ⬅️ Manda desenhar a tabela
+    setHistorico(loc);
+    renderHistorico();
     mostrarToast(`Sincronizado! +${add} nova(s) e ${atual} atualizada(s).`);
     
     localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString()); 
