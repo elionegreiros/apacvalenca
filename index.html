@@ -995,7 +995,7 @@ async function sincronizarComSheets(dados, acao){
     console.error('Falha de rede/CORS no sync:', e);
     return false;
   }
-
+}
 async function puxarDoSheets(){
   const url=getSheetsUrl();
   if(!url){ mostrarToast('URL do Sheets não configurada!', true); return; }
