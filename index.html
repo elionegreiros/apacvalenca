@@ -132,6 +132,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 </head>
 <body>
 
+<!-- TELA DE LOGIN -->
 <div id="telaLogin" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#f8fafc;z-index:999999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="background:#ffffff;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.05);width:100%;max-width:380px;border:1px solid #e2e8f0;">
     <div style="text-align:center;margin-bottom:30px;">
@@ -257,7 +258,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           <input type="hidden" id="fcbo" data-json="cbo" readonly>
         </div>
       </div>
-      
       <!-- PROCEDIMENTOS -->
       <div class="section">
         <div class="section-head"><h2><span class="section-num">4</span>Procedimentos</h2></div>
@@ -315,7 +315,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
               <label>Selecione o 3º Procedimento (Opcional)</label>
               <select id="f_opcao_secundario" onchange="onOpcaoSecundarioChange()">
                 <option value="">— Selecione —</option>
-                <!-- As opções serão inseridas via JS -->
               </select>
             </div>
             <div class="field w-2">
@@ -402,7 +401,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
 /* =========================================================
    CONFIGURAÇÃO DE URL CHUMBADA (EQUIPE)
@@ -412,13 +410,12 @@ const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbxb4vp_SsstwNF
 const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531447', cnes_executante: '8531447', nome_executante: 'AMBULATORIO DE VALENCA CENTRO' };
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
 
-// Configuração de procedimentos por especialista
 const REGRAS_PROCEDIMENTOS = {
   'cardiologia_juliana': {
     nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120',
     proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: null, // Usa dropdown
+    proc_3_fixo: null,
     opcoes_proc_3: [
       { cod: '0211020036', nome: 'ELETROCARDIOGRAMA' },
       { cod: '0204030153', nome: 'RADIOGRAFIA DE TORAX (PA E PERFIL)' }
@@ -438,9 +435,9 @@ const REGRAS_PROCEDIMENTOS = {
   },
   'ortopedia_ienner': {
     nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270',
-    proc_1: { cod: '0903010011', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
+    proc_1: { cod: '0903010038', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: null, // Usa dropdown
+    proc_3_fixo: null,
     opcoes_proc_3: [
       { cod: '0204020034', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO + OBLIQ)' },
       { cod: '0204020042', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO / FLEXAO)' },
@@ -475,7 +472,6 @@ function formatarRaca(v){const m={'01':'Branca','02':'Preta','03':'Parda','04':'
 function formatarSexo(v){return v==='M'?'Masculino':v==='F'?'Feminino':(v||'')}
 function classeEsp(e){return e==='Cardiologia'?'cardio':e==='Ginecologia'?'gineco':e==='Ortopedia'?'orto':''}
 
-// Máscaras
 const mascaras={
   cns:v=>{v=v.replace(/\D/g,'').slice(0,15);return v.replace(/(\d{3})(\d{4})(\d{4})(\d{4})/,'$1 $2 $3 $4').replace(/(\d{3})(\d{4})(\d{4})/,'$1 $2 $3').replace(/(\d{3})(\d{4})/,'$1 $2')},
   cpf:v=>{v=v.replace(/\D/g,'').slice(0,11);return v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')},
@@ -499,13 +495,11 @@ document.querySelectorAll('.auto-upper').forEach(el => {
   });
 });
 
-// Preenche os procedimentos ao escolher o especialista
 function onEspecialidadeChange(){
   const key = document.getElementById('fEspecialidade').value;
   const regra = REGRAS_PROCEDIMENTOS[key];
   const infoRow = document.getElementById('espInfoRow');
 
-  // Limpa tudo antes de preencher
   document.getElementById('f18_codigo').value = '';
   document.getElementById('f18_nome').value = '';
   document.getElementById('f18_qtd').value = 0;
@@ -520,7 +514,6 @@ function onEspecialidadeChange(){
 
   if(!regra){ infoRow.style.display = 'none'; return; }
 
-  // Preenche o preview do especialista
   infoRow.style.display = 'grid';
   document.getElementById('espNome').textContent = regra.nome;
   document.getElementById('espCns').textContent = regra.cns ? mascaras.cns(regra.cns) : 'Não configurado';
@@ -529,17 +522,14 @@ function onEspecialidadeChange(){
   document.getElementById('fcnsEsp').value = regra.cns || '';
   document.getElementById('fcbo').value = regra.cbo || '';
 
-  // Preenche Proc 1 (Principal)
   document.getElementById('f18_codigo').value = regra.proc_1.cod;
   document.getElementById('f18_nome').value = regra.proc_1.nome;
   document.getElementById('f18_qtd').value = regra.proc_1.qtd;
   
-  // Preenche Proc 2 (Secundário 1)
   document.getElementById('f21').value = regra.proc_2.cod;
   document.getElementById('f21_nome').value = regra.proc_2.nome;
   document.getElementById('f21_qtd').value = regra.proc_2.qtd;
 
-  // Preenche Proc 3 (Secundário 2) - Fixo ou Dropdown
   if(regra.proc_3_fixo) {
     document.getElementById('f24').value = regra.proc_3_fixo.cod;
     document.getElementById('f24_nome').value = regra.proc_3_fixo.nome;
@@ -553,7 +543,7 @@ function onEspecialidadeChange(){
       opt.textContent = `${op.cod} - ${op.nome}`;
       select.appendChild(opt);
     });
-    document.getElementById('f_opcao_secundario_qtd').value = 1; // QTD padrão
+    document.getElementById('f_opcao_secundario_qtd').value = 1;
   }
 }
 
@@ -904,7 +894,6 @@ async function sincronizarComSheets(dados, acao){
   if(!url){ console.warn('URL do Sheets não configurada'); return false; }
   
   try{
-    // Prepara o objeto final que o Google Script vai ler (dados soltos)
     const payload = {
       _id: dados._id,
       _criado_em: dados._criado_em,
@@ -959,7 +948,7 @@ async function sincronizarComSheets(dados, acao){
     const resposta = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload) // Agora envia o payload solto, sem { acao, dados }
+      body: JSON.stringify(payload)
     });    
 
     const texto = await resposta.text();
