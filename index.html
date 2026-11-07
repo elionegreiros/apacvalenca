@@ -198,13 +198,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
       <div class="section">
         <div class="section-head"><h2><span class="section-num">2</span>Identificação do Usuário</h2></div>
         <div class="section-body">
-          <div class="row">
+                    <div class="row">
             <div class="field w-4"><label>CPF <span class="req">*</span></label><input type="text" id="f05" data-json="cpf_paciente" data-mask="cpf" maxlength="14" required placeholder="000.000.000-00"></div>
             <div class="field w-full"><label>Nome do Paciente <span class="req">*</span></label><input type="text" id="f03" data-json="nome_paciente" class="auto-upper" maxlength="30" required></div>
           </div>
           <div class="row">
-            <div class="field w-half"><label>Nome da Mãe</label><input type="text" id="f09" data-json="nome_mae" class="auto-upper" maxlength="30"></div>
-            <div class="field w-half"><label>Nome do Responsável</label><input type="text" id="f11" data-json="nome_responsavel" class="auto-upper" maxlength="30"></div>
+            <div class="field w-half"><label>Nome da Mãe <span class="req">*</span></label><input type="text" id="f09" data-json="nome_mae" class="auto-upper" maxlength="30" required></div>
+            <div class="field w-half"><label>Nome do Responsável <span class="req">*</span></label><input type="text" id="f11" data-json="nome_responsavel" class="auto-upper" maxlength="30" required></div>
           </div>
           <div class="row">
             <div class="field w-3"><label>CEP <span class="req">*</span></label><input type="text" id="f17" data-json="cep" data-mask="cep" maxlength="9" value="64300-000" required></div>
@@ -220,8 +220,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           <div class="row">
             <div class="field w-4"><label>Data de Nascimento <span class="req">*</span></label><input type="date" id="f06" data-json="data_nascimento" required></div>
             <div class="field w-5">
-              <label>Raça / Cor</label>
-              <select id="f08" data-json="raca_cor">
+              <label>Raça / Cor <span class="req">*</span></label>
+              <select id="f08" data-json="raca_cor" required>
                 <option value="">— Selecione —</option><option value="01">01 · Branca</option><option value="02">02 · Preta</option><option value="03">03 · Parda</option><option value="04">04 · Amarela</option><option value="05">05 · Indígena</option><option value="99">99 · Sem informação</option>
               </select>
             </div>
@@ -411,33 +411,33 @@ const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cp
 
 const REGRAS_PROCEDIMENTOS = {
   'cardiologia_juliana': {
-    nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120',
+    nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120', cid_fixo: 'Z136',
     proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
     proc_2: { cod: '0211020036', nome: 'ELETROCARDIOGRAMA', qtd: 1 },
     proc_3_fixo: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 }
   },
   'ginecologia_bianca': {
-    nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250',
+    nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250', cid_fixo: 'Z014',
     proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: null, // Libera o Dropdown
+    proc_3_fixo: null,
     opcoes_proc_3: [
       { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA' },
       { cod: '0205020186', nome: 'ULTRASSONOGRAFIA TRANSVAGINAL' }
     ]
   },
   'ginecologia_maria': {
-    nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220',
+    nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220', cid_fixo: 'Z014',
     proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: null, // Libera o Dropdown
+    proc_3_fixo: null,
     opcoes_proc_3: [
       { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA' },
       { cod: '0205020186', nome: 'ULTRASSONOGRAFIA TRANSVAGINAL' }
     ]
   },
   'ortopedia_ienner': {
-    nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270',
+    nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270', cid_fixo: null,
     proc_1: { cod: '0903010038', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
     proc_3_fixo: { cod: '0204020093', nome: 'RADIOGRAFIA DE COLUNA TORACICA (AP + LATERAL)', qtd: 1 }
@@ -480,6 +480,7 @@ function onEspecialidadeChange(){
   const key = document.getElementById('fEspecialidade').value;
   const regra = REGRAS_PROCEDIMENTOS[key];
   const infoRow = document.getElementById('espInfoRow');
+  const inputCid = document.getElementById('fCid');
 
   document.getElementById('f18_codigo').value = '';
   document.getElementById('f18_nome').value = '';
@@ -492,6 +493,17 @@ function onEspecialidadeChange(){
   document.getElementById('f24_qtd').value = 0;
   document.getElementById('row_escolha').style.display = 'none';
   document.getElementById('f_opcao_secundario').innerHTML = '<option value="">— Selecione —</option>';
+
+  // TRAVA E PREENCHE O CID SE FOR FIXO
+  if (regra && regra.cid_fixo) {
+    inputCid.value = regra.cid_fixo;
+    inputCid.readOnly = true;
+    inputCid.style.background = 'var(--surface-alt)';
+  } else {
+    inputCid.value = '';
+    inputCid.readOnly = false;
+    inputCid.style.background = '#fff';
+  }
 
   if(!regra){ infoRow.style.display = 'none'; return; }
 
