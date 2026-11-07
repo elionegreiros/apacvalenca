@@ -905,10 +905,11 @@ async function sincronizarComSheets(dados, acao){
   try{
     const resposta = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      // A MÁGICA É AQUI: mudar de application/json para text/plain
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ acao: acao || 'criar', dados: dados })
-    });
-    const texto = await resposta.text();
+    });    
+	const texto = await resposta.text();
     let resultado;
     try { resultado = JSON.parse(texto); }
     catch(parseErr){
