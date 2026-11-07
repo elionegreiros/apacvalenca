@@ -132,7 +132,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
 <div id="telaLogin" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#f8fafc;z-index:999999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="background:#ffffff;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.05);width:100%;max-width:380px;border:1px solid #e2e8f0;">
     <div style="text-align:center;margin-bottom:30px;">
@@ -607,31 +606,43 @@ let editandoId=null;
 async function salvarNoHistorico(){
   const faltando=validarFormulario();
   if(faltando.length){mostrarToast(`Preencha: ${faltando.slice(0,3).join(', ')}${faltando.length>3?'...':''}`,true);return}
-  const dados=coletarDados(),h=getHistorico(),agora=new Date().toISOString();
+  
+  const btn = document.querySelector('button[onclick="salvarNoHistorico()"]');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  const txtAntigo = btn.innerHTML;
+  btn.innerHTML = 'Salvando...';
 
-  if(editandoId){
-    const i=h.findIndex(a=>a._id===editandoId);
-    if(i>=0){
-      h[i]={...h[i],...dados,_atualizado_em:agora};setHistorico(h);
-      mostrarToast('APAC atualizada com sucesso');
-      editandoId=null;
+  try {
+    const dados=coletarDados(),h=getHistorico(),agora=new Date().toISOString();
+
+    if(editandoId){
+      const i=h.findIndex(a=>a._id===editandoId);
+      if(i>=0){
+        h[i]={...h[i],...dados,_atualizado_em:agora};setHistorico(h);
+        mostrarToast('APAC atualizada com sucesso');
+        editandoId=null;
+        if(getSheetsUrl()){
+          const ok = await sincronizarComSheets(h.find(a=>a._id===dados._id) || h[i], 'atualizar');
+          if(!ok) mostrarToast('Salvo localmente, mas FALHOU ao enviar para a nuvem', true);
+        }
+      }
+    }else{
+      dados._id=gerarId();dados._criado_em=agora;dados._atualizado_em=agora;
+      dados._exportado=false;dados._sincronizado=false;
+      h.unshift(dados);setHistorico(h);
+      mostrarToast('APAC salva no histórico');
       if(getSheetsUrl()){
-        const ok = await sincronizarComSheets(h.find(a=>a._id===dados._id) || h[i], 'atualizar');
-        if(!ok) mostrarToast('Salvo localmente, mas FALHOU ao enviar para a nuvem (ver console)', true);
+        const ok = await sincronizarComSheets(dados, 'criar');
+        if(!ok) mostrarToast('Salvo localmente, mas FALHOU ao enviar para a nuvem', true);
       }
     }
-  }else{
-    dados._id=gerarId();dados._criado_em=agora;dados._atualizado_em=agora;
-    dados._exportado=false;dados._sincronizado=false;
-    h.unshift(dados);setHistorico(h);
-    mostrarToast('APAC salva no histórico');
-    if(getSheetsUrl()){
-      const ok = await sincronizarComSheets(dados, 'criar');
-      if(!ok) mostrarToast('Salvo localmente, mas FALHOU ao enviar para a nuvem (ver console)', true);
-    }
+    localStorage.removeItem(RASC_KEY);
+    novaApac();renderHistorico();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = txtAntigo;
   }
-  localStorage.removeItem(RASC_KEY);
-  novaApac();renderHistorico();
 }
 
 function novaApac(){
@@ -869,100 +880,61 @@ async function sincronizarComSheets(dados, acao){
   
   try{
     const payload = {
-      _id: dados._id,
-      _criado_em: dados._criado_em,
-      _atualizado_em: dados._atualizado_em,
-      _exportado: dados._exportado ? "TRUE" : "FALSE",
-      _sincronizado: dados._sincronizado ? "TRUE" : "FALSE",
-      especialidade_key: dados.especialidade_key,
-      especialidade: dados.especialidade,
-      profissional_solicitante: dados.profissional_solicitante,
-      cns_especialista: dados.cns_especialista,
-      cbo: dados.cbo,
-      estabelecimento_solicitante: dados.estabelecimento_solicitante,
-      cnes_solicitante: dados.cnes_solicitante,
-      estabelecimento_executante: dados.estabelecimento_executante,
-      cnes_executante: dados.cnes_executante,
-      cpf_paciente: dados.cpf_paciente,
-      nome_paciente: dados.nome_paciente,
-      nome_mae: dados.nome_mae,
-      nome_responsavel: dados.nome_responsavel,
-      cep: dados.cep,
-      cod_logradouro: dados.cod_logradouro,
-      endereco: dados.endereco,
-      numero: dados.numero,
-      bairro: dados.bairro,
-      telefone1_ddd: dados.telefone1_ddd,
-      telefone1_num: dados.telefone1_num,
-      data_nascimento: dados.data_nascimento,
-      raca_cor: dados.raca_cor,
-      sexo: dados.sexo,
-      proc_1_codigo: dados.proc_1_codigo || dados.procedimento_principal,
-      proc_1_nome: "", 
-      proc_1_qtd: dados.proc_1_qtd || 1,
-      proc_2_codigo: dados.proc_2_codigo,
-      proc_2_nome: "",
-      proc_2_qtd: dados.proc_2_qtd || 0,
-      proc_3_codigo: dados.proc_3_codigo,
-      proc_3_nome: "",
-      proc_3_qtd: dados.proc_3_qtd || 0,
-      proc_4_codigo: dados.proc_4_codigo || "",
-      proc_4_nome: "",
-      proc_4_qtd: dados.proc_4_qtd || 0,
-      proc_5_codigo: "",
-      proc_5_nome: "",
-      proc_5_qtd: 0,
-      profissional_autorizador: dados.profissional_autorizador,
-      doc_profissional_autorizador: dados.doc_profissional_autorizador,
-      tipo_doc_autorizador: dados.tipo_doc_autorizador,
-      numero_apac: dados.numero_apac || "",
-      cid_principal: dados.cid_principal
+      _id: dados._id, _criado_em: dados._criado_em, _atualizado_em: dados._atualizado_em,
+      _exportado: dados._exportado ? "TRUE" : "FALSE", _sincronizado: dados._sincronizado ? "TRUE" : "FALSE",
+      especialidade_key: dados.especialidade_key, especialidade: dados.especialidade,
+      profissional_solicitante: dados.profissional_solicitante, cns_especialista: dados.cns_especialista, cbo: dados.cbo,
+      estabelecimento_solicitante: dados.estabelecimento_solicitante, cnes_solicitante: dados.cnes_solicitante,
+      estabelecimento_executante: dados.estabelecimento_executante, cnes_executante: dados.cnes_executante,
+      cpf_paciente: dados.cpf_paciente, nome_paciente: dados.nome_paciente, nome_mae: dados.nome_mae, nome_responsavel: dados.nome_responsavel,
+      cep: dados.cep, cod_logradouro: dados.cod_logradouro, endereco: dados.endereco, numero: dados.numero, bairro: dados.bairro,
+      telefone1_ddd: dados.telefone1_ddd, telefone1_num: dados.telefone1_num, data_nascimento: dados.data_nascimento,
+      raca_cor: dados.raca_cor, sexo: dados.sexo,
+      proc_1_codigo: dados.proc_1_codigo || dados.procedimento_principal, proc_1_nome: "", proc_1_qtd: dados.proc_1_qtd || 1,
+      proc_2_codigo: dados.proc_2_codigo, proc_2_nome: "", proc_2_qtd: dados.proc_2_qtd || 0,
+      proc_3_codigo: dados.proc_3_codigo, proc_3_nome: "", proc_3_qtd: dados.proc_3_qtd || 0,
+      proc_4_codigo: dados.proc_4_codigo || "", proc_4_nome: "", proc_4_qtd: dados.proc_4_qtd || 0,
+      proc_5_codigo: "", proc_5_nome: "", proc_5_qtd: 0,
+      profissional_autorizador: dados.profissional_autorizador, doc_profissional_autorizador: dados.doc_profissional_autorizador, tipo_doc_autorizador: dados.tipo_doc_autorizador,
+      numero_apac: dados.numero_apac || "", cid_principal: dados.cid_principal
     };
+
+    const pacote = { acao: acao, dados: payload };
 
     const resposta = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(pacote) 
     });    
 
     const texto = await resposta.text();
     let resultado;
-    try { 
-      resultado = JSON.parse(texto); 
-    } catch(parseErr){
-      console.error('Resposta não é JSON. Conteúdo recebido:', texto);
-      return false;
-    }
+    try { resultado = JSON.parse(texto); } catch(parseErr){ return false; }
 
     if(resultado && resultado.status === "sucesso"){
       const h = getHistorico();
       const i = h.findIndex(a => a._id === dados._id);
       if(i >= 0){ 
         h[i]._sincronizado = true; 
-        h[i].codigos_apac = resultado.cod_apac; 
+        if(resultado.cod_apac) h[i].codigos_apac = resultado.cod_apac; 
         setHistorico(h); 
       }
       
       if(acao === 'criar'){
-        alert(`✅ APAC salva na nuvem!\n\nLinha preenchida na planilha: ${resultado.linha_utilizada}\nCódigo APAC gerado: ${resultado.cod_apac}`);
+        alert(`✅ APAC salva na nuvem!\n\nLinha: ${resultado.linha_utilizada}\nCódigo APAC: ${resultado.cod_apac}`);
       }
-      
       return true;
     }
-
-    console.warn('Sync retornou erro do servidor:', resultado);
     alert("Erro no servidor: " + (resultado.mensagem || "Ver console"));
     return false;
-
   } catch(e){
-    console.error('Falha de rede/CORS no sync:', e);
     return false;
   }
 }
+
 async function puxarDoSheets(){
   const url=getSheetsUrl();
   if(!url){ mostrarToast('URL do Sheets não configurada!', true); return; }
-  
   mostrarToast('Buscando dados da nuvem...');
   
   try{ 
@@ -985,16 +957,11 @@ async function puxarDoSheets(){
       });
 
       const l=mapa.get(r._id); 
-      if(!l){
-        loc.unshift(r);
-        add++;
-      } 
+      if(!l){ loc.unshift(r); add++; } 
       else if(new Date(r._atualizado_em) > new Date(l._atualizado_em)){
         const statusLocalExportado = (l._exportado === true || l._exportado === 'true' || l._exportado === 'TRUE');
         Object.assign(l, r);
-        if (statusLocalExportado) {
-           l._exportado = true; 
-        }
+        if (statusLocalExportado) l._exportado = true; 
         atual++;
       }
     }); 
@@ -1002,11 +969,9 @@ async function puxarDoSheets(){
     setHistorico(loc);
     renderHistorico();
     mostrarToast(`Sincronizado! +${add} nova(s) e ${atual} atualizada(s).`);
-    
     localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString()); 
   }
   catch(e){
-    console.warn('Puxar falhou:',e);
     mostrarToast('Erro ao sincronizar: ' + e.message, true);
   }
 }
@@ -1019,9 +984,6 @@ document.getElementById('apacForm').addEventListener('input',()=>{ clearTimeout(
 let toastT=null;
 function mostrarToast(m,e=false){ const t=document.getElementById('toast');t.textContent=m;t.classList.toggle('error',e);t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3500); }
 
-/* =========================================================
-   SISTEMA DE LOGIN E SEGURANÇA
-   ========================================================= */
 const USUARIOS_SISTEMA = {
   'digitador': 'apac2026',
   'admin': 'admin123'
@@ -1041,14 +1003,12 @@ function fazerLogin() {
   }
 }
 
-// Verifica sessão
 if (sessionStorage.getItem('apac_logado') === 'sim') {
   document.getElementById('telaLogin').style.display = 'none';
 }
 
 (function init(){
   localStorage.setItem(AUTOSYNC_KEY, '1');
-  
   atualizarStats();renderHistorico();atualizarStatusTopbar();
   
   if(localStorage.getItem(RASC_KEY)){
