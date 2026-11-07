@@ -902,19 +902,100 @@ function toggleAutoSync(v){localStorage.setItem(AUTOSYNC_KEY,v?'1':'0')}
 async function sincronizarComSheets(dados, acao){
   const url = getSheetsUrl();
   if(!url){ console.warn('URL do Sheets não configurada'); return false; }
+  
   try{
+    // Prepara o objeto final que o Google Script vai ler (dados soltos)
+    const payload = {
+      _id: dados._id,
+      _criado_em: dados._criado_em,
+      _atualizado_em: dados._atualizado_em,
+      _exportado: dados._exportado ? "TRUE" : "FALSE",
+      _sincronizado: dados._sincronizado ? "TRUE" : "FALSE",
+      especialidade_key: dados.especialidade_key,
+      especialidade: dados.especialidade,
+      profissional_solicitante: dados.profissional_solicitante,
+      cns_especialista: dados.cns_especialista,
+      cbo: dados.cbo,
+      estabelecimento_solicitante: dados.estabelecimento_solicitante,
+      cnes_solicitante: dados.cnes_solicitante,
+      estabelecimento_executante: dados.estabelecimento_executante,
+      cnes_executante: dados.cnes_executante,
+      cpf_paciente: dados.cpf_paciente,
+      nome_paciente: dados.nome_paciente,
+      nome_mae: dados.nome_mae,
+      nome_responsavel: dados.nome_responsavel,
+      cep: dados.cep,
+      cod_logradouro: dados.cod_logradouro,
+      endereco: dados.endereco,
+      numero: dados.numero,
+      bairro: dados.bairro,
+      telefone1_ddd: dados.telefone1_ddd,
+      telefone1_num: dados.telefone1_num,
+      data_nascimento: dados.data_nascimento,
+      raca_cor: dados.raca_cor,
+      sexo: dados.sexo,
+      proc_1_codigo: dados.proc_1_codigo || dados.procedimento_principal,
+      proc_1_nome: "", 
+      proc_1_qtd: dados.proc_1_qtd || 1,
+      proc_2_codigo: dados.proc_2_codigo,
+      proc_2_nome: "",
+      proc_2_qtd: dados.proc_2_qtd || 0,
+      proc_3_codigo: dados.proc_3_codigo,
+      proc_3_nome: "",
+      proc_3_qtd: dados.proc_3_qtd || 0,
+      proc_4_codigo: dados.proc_4_codigo || "",
+      proc_4_nome: "",
+      proc_4_qtd: dados.proc_4_qtd || 0,
+      proc_5_codigo: "",
+      proc_5_nome: "",
+      proc_5_qtd: 0,
+      profissional_autorizador: dados.profissional_autorizador,
+      doc_profissional_autorizador: dados.doc_profissional_autorizador,
+      tipo_doc_autorizador: dados.tipo_doc_autorizador,
+      numero_apac: dados.numero_apac || "",
+      cid_principal: dados.cid_principal
+    };
+
     const resposta = await fetch(url, {
       method: 'POST',
-      // A MÁGICA É AQUI: mudar de application/json para text/plain
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ acao: acao || 'criar', dados: dados })
+      body: JSON.stringify(payload) // Agora envia o payload solto, sem { acao, dados }
     });    
-	const texto = await resposta.text();
+
+    const texto = await resposta.text();
     let resultado;
-    try { resultado = JSON.parse(texto); }
-    catch(parseErr){
+    try { 
+      resultado = JSON.parse(texto); 
+    } catch(parseErr){
       console.error('Resposta não é JSON. Conteúdo recebido:', texto);
       return false;
+    }
+
+    if(resultado && resultado.status === "sucesso"){
+      const h = getHistorico();
+      const i = h.findIndex(a => a._id === dados._id);
+      if(i >= 0){ 
+        h[i]._sincronizado = true; 
+        h[i].codigos_apac = resultado.cod_apac; 
+        setHistorico(h); 
+      }
+      
+      if(acao === 'criar'){
+        alert(`✅ APAC salva na nuvem!\n\nLinha preenchida na planilha: ${resultado.linha_utilizada}\nCódigo APAC gerado: ${resultado.cod_apac}`);
+      }
+      
+      return true;
+    }
+
+    console.warn('Sync retornou erro do servidor:', resultado);
+    alert("Erro no servidor: " + (resultado.mensagem || "Ver console"));
+    return false;
+
+  } catch(e){
+    console.error('Falha de rede/CORS no sync:', e);
+    return false;
+  }
+}
     }
     if(resultado && resultado.ok){
       const h = getHistorico();
