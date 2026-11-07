@@ -411,15 +411,12 @@ const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
 
 const REGRAS_PROCEDIMENTOS = {
+    const REGRAS_PROCEDIMENTOS = {
   'cardiologia_juliana': {
     nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120',
     proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
-    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: null,
-    opcoes_proc_3: [
-      { cod: '0211020036', nome: 'ELETROCARDIOGRAMA' },
-      { cod: '0204030153', nome: 'RADIOGRAFIA DE TORAX (PA E PERFIL)' }
-    ]
+    proc_2: { cod: '0211020036', nome: 'ELETROCARDIOGRAMA', qtd: 1 },
+    proc_3_fixo: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 }
   },
   'ginecologia_bianca': {
     nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250',
@@ -436,30 +433,11 @@ const REGRAS_PROCEDIMENTOS = {
   'ortopedia_ienner': {
     nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270',
     proc_1: { cod: '0903010038', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
+    // Fixei a consulta como secundário 1 (padrão SUS)
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: null,
-    opcoes_proc_3: [
-      { cod: '0204020034', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO + OBLIQ)' },
-      { cod: '0204020042', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO / FLEXAO)' },
-      { cod: '0204020077', nome: 'RADIOGRAFIA DE COLUNA LOMBO-SACRA (C/ OBLIQUAS)' },
-      { cod: '0204020085', nome: 'RADIOGRAFIA DE COLUNA LOMBO-SACRA FUNCIONAL / DINAMICA' },
-      { cod: '0204020093', nome: 'RADIOGRAFIA DE COLUNA TORACICA (AP + LATERAL)' },
-      { cod: '0204020107', nome: 'RADIOGRAFIA DE COLUNA TORACO-LOMBAR' },
-      { cod: '0204020131', nome: 'RADIOGRAFIA PANORAMICA DE COLUNA TOTAL' },
-      { cod: '0204040035', nome: 'RADIOGRAFIA DE ARTICULACAO ESCAPULO-UMERAL' },
-      { cod: '0204040078', nome: 'RADIOGRAFIA DE COTOVELO' },
-      { cod: '0204040094', nome: 'RADIOGRAFIA DE MAO' },
-      { cod: '0204040116', nome: 'RADIOGRAFIA DE ESCAPULA/OMBRO (TRES POSICOES)' },
-      { cod: '0204040124', nome: 'RADIOGRAFIA DE PUNHO (AP + LATERAL + OBLIQUA)' },
-      { cod: '0204060060', nome: 'RADIOGRAFIA DE ARTICULACAO COXO-FEMORAL' },
-      { cod: '0204060095', nome: 'RADIOGRAFIA DE BACIA' },
-      { cod: '0204060109', nome: 'RADIOGRAFIA DE CALCANEO' },
-      { cod: '0204060125', nome: 'RADIOGRAFIA DE JOELHO (AP + LATERAL)' },
-      { cod: '0204060133', nome: 'RADIOGRAFIA DE JOELHO OU PATELA (AP + LAT + AXIAL)' },
-      { cod: '0204060141', nome: 'RADIOGRAFIA DE JOELHO OU PATELA (AP + LAT + OBLIQUA)' },
-      { cod: '0204060150', nome: 'RADIOGRAFIA DE PE / DEDOS DO PE' },
-      { cod: '0204060176', nome: 'RADIOGRAFIA PANORAMICA DE MEMBROS INFERIORES' }
-    ]
+    // Fixei um Raio-X comum como secundário 2. 
+    // ATENÇÃO: Se na Ortopedia de vocês o raio-x mais comum for outro, troque o código e o nome abaixo:
+    proc_3_fixo: { cod: '0204020093', nome: 'RADIOGRAFIA DE COLUNA TORACICA (AP + LATERAL)', qtd: 1 }
   }
 };
 
