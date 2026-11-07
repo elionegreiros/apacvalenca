@@ -995,21 +995,6 @@ async function sincronizarComSheets(dados, acao){
     console.error('Falha de rede/CORS no sync:', e);
     return false;
   }
-}
-    }
-    if(resultado && resultado.ok){
-      const h = getHistorico();
-      const i = h.findIndex(a => a._id === dados._id);
-      if(i >= 0){ h[i]._sincronizado = true; setHistorico(h); }
-      return true;
-    }
-    console.warn('Sync retornou erro do servidor:', resultado);
-    return false;
-  } catch(e){
-    console.error('Falha de rede/CORS no sync:', e);
-    return false;
-  }
-}
 
 async function puxarDoSheets(){
   const url=getSheetsUrl();
