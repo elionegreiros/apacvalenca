@@ -21,8 +21,6 @@
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 .container{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
-
-/* ===== TOPBAR ===== */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
 .topbar-inner{max-width:1120px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:14px}
@@ -33,15 +31,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .status-item{display:flex;align-items:center;gap:6px}
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--success)}
 .status-item.warn .status-dot{background:var(--warning)}
-
-/* ===== TABS ===== */
 .tabs{display:flex;gap:2px;margin:20px 0;background:var(--surface-alt);padding:4px;border-radius:var(--radius);border:1px solid var(--border);width:fit-content;max-width:100%;overflow-x:auto}
 .tab{padding:8px 18px;color:var(--text-muted);cursor:pointer;font-weight:500;font-size:13px;border:none;background:transparent;font-family:inherit;border-radius:var(--radius-sm);transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .tab:hover{color:var(--text)} .tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm);font-weight:600}
 .tab .badge{display:inline-block;background:var(--border-strong);color:#fff;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;min-width:20px;text-align:center}
 .tab.active .badge{background:var(--primary);color:#fff}
-
-/* ===== VIEWS & SECTIONS ===== */
 .view{display:none}.view.active{display:block}
 .section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow-sm);overflow:hidden}
 .section-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--surface)}
@@ -50,8 +44,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .section-body{padding:20px}.section-body.tight{padding:16px 20px}
 .section.accent{border-color:var(--primary-border);background:var(--surface)}
 .section.accent .section-head{background:var(--primary-light);border-color:var(--primary-border);color:var(--primary)}
-
-/* ===== FORMS ===== */
 .row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}.row:last-child{margin-bottom:0}
 .field{display:flex;flex-direction:column;min-width:0}
 .field label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;display:flex;align-items:center;gap:4px}
@@ -64,17 +56,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .field input[readonly],.field select:disabled{background:var(--surface-alt);color:var(--text-muted);cursor:not-allowed;border-color:var(--border)}
 .field select.big{font-size:14px;height:46px;font-weight:500;cursor:pointer}
 .field .hint{color:var(--text-faint);font-size:11px;margin-top:5px}
-
-/* ===== WIDTHS ===== */
 .w-full{flex:1 1 100%}.w-half{flex:1 1 calc(50% - 8px)}.w-third{flex:1 1 calc(33.33% - 11px)}.w-quarter{flex:1 1 calc(25% - 12px)}
 .w-1{flex:0 0 70px}.w-2{flex:0 0 100px}.w-3{flex:0 0 130px}.w-4{flex:0 0 160px}.w-5{flex:0 0 200px}.w-6{flex:0 0 240px}
-
-/* ===== RADIO ===== */
 .radio-group{display:flex;gap:18px;align-items:center;height:38px}
 .radio-group label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);cursor:pointer;margin:0;font-weight:400}
 .radio-group input[type=radio]{width:16px;height:16px;cursor:pointer;accent-color:var(--primary)}
-
-/* ===== CAIXAS DE DESTAQUE ===== */
 .unidade-box{display:flex;gap:30px;flex-wrap:wrap;padding:14px 18px;background:var(--surface-alt);border-radius:var(--radius);border:1px solid var(--border)}
 .unidade-box .item{display:flex;flex-direction:column;gap:3px}
 .unidade-box .item .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-faint);font-weight:600}
@@ -84,13 +70,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .esp-preview .item .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-faint);font-weight:600}
 .esp-preview .item strong{font-size:13px;color:var(--text);font-weight:600}
 .esp-preview .item code{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:13px;color:var(--primary);background:transparent;padding:0;font-weight:600}
-
-/* ===== PROCEDIMENTOS ===== */
 .procedimento-secundario{display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:end;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--border)}
 .procedimento-secundario:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .procedimento-principal{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:end}
-
-/* ===== BOTÕES ===== */
 .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-top:16px;box-shadow:var(--shadow-sm);position:sticky;bottom:16px;z-index:50}
 .actions .spacer{flex:1}
 .btn{border:1px solid transparent;border-radius:var(--radius);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;display:inline-flex;align-items:center;gap:7px;height:36px;white-space:nowrap}
@@ -101,8 +83,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .btn-danger{background:#fff;color:var(--danger);border-color:var(--danger-border)}.btn-danger:hover{background:var(--danger-light)}
 .btn-ghost{background:transparent;color:var(--text-muted)}.btn-ghost:hover{background:var(--surface-alt);color:var(--text)}
 .btn-google{background:#fff;color:var(--text);border-color:var(--border)}.btn-google:hover{background:var(--surface-alt)}
-
-/* ===== HISTÓRICO ===== */
 .history-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .history-toolbar input,.history-toolbar select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;height:36px;background:#fff;color:var(--text)}
 .history-toolbar input[type=search]{flex:1 1 240px;min-width:200px}
@@ -127,8 +107,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .icon-btn{background:transparent;border:1px solid transparent;border-radius:var(--radius-sm);padding:5px;cursor:pointer;color:var(--text-muted);display:inline-flex;align-items:center;justify-content:center;transition:all .15s}
 .icon-btn:hover{background:var(--surface-alt);color:var(--text);border-color:var(--border)}.icon-btn.danger:hover{background:var(--danger-light);color:var(--danger);border-color:var(--danger-border)}
 .icon-btn svg{width:15px;height:15px}
-
-/* ===== MODAL ===== */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,.4);backdrop-filter:blur(2px);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
 .modal{background:var(--surface);border-radius:var(--radius-lg);max-width:760px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);border:1px solid var(--border);display:flex;flex-direction:column}
@@ -144,13 +122,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .detail-grid .item{font-size:13px;line-height:1.5}
 .detail-grid .lbl{color:var(--text-faint);font-size:11px;display:block;margin-bottom:1px}
 .detail-grid .val{color:var(--text);font-weight:500}
-
-/* ===== TOAST ===== */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--radius);box-shadow:var(--shadow-lg);font-weight:500;font-size:13px;opacity:0;transform:translateY(20px);transition:all .25s;z-index:99999;max-width:400px;display:flex;align-items:center;gap:10px}
 .toast::before{content:'';width:6px;height:6px;border-radius:50%;background:#34d399;flex-shrink:0}
 .toast.show{opacity:1;transform:translateY(0)}.toast.error{background:var(--danger)}.toast.error::before{background:#fca5a5}
-
-/* ===== RESPONSIVO E PRINT ===== */
 @media(max-width:700px){.container{padding:16px 14px 40px}.topbar-inner{padding:12px 14px}.w-half,.w-third,.w-quarter,.w-1,.w-2,.w-3,.w-4,.w-5,.w-6{flex:1 1 100%}.procedimento-principal,.procedimento-secundario{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.esp-preview{grid-template-columns:1fr}.actions{padding:12px;gap:8px}.actions .btn{flex:1 1 auto;justify-content:center}.actions .spacer{display:none}.history-stats{gap:16px}.section-body{padding:16px}}
 @media print{body{background:#fff;font-size:11px}.container{margin:0;max-width:100%;padding:0}.actions,.tabs,.history-toolbar,.topbar,.banner-pendencias{display:none !important}.section{box-shadow:none;border:1px solid #999;page-break-inside:avoid}.section-head{background:#f5f5f5 !important}}
 .icon{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle}
@@ -283,15 +257,76 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           <input type="hidden" id="fcbo" data-json="cbo" readonly>
         </div>
       </div>
+      
+      <!-- PROCEDIMENTOS -->
       <div class="section">
-        <div class="section-head"><h2><span class="section-num">4</span>Procedimento Solicitado</h2></div>
+        <div class="section-head"><h2><span class="section-num">4</span>Procedimentos</h2></div>
         <div class="section-body">
-          <div class="procedimento-principal">
-            <div class="field"><label><span class="lbl-num">18</span>Código <span class="req">*</span></label><input type="text" id="f18" data-json="proc_1_codigo" maxlength="10" required placeholder="0000000000"></div>
-            <div class="field" style="max-width:100px;"><label><span class="lbl-num">20</span>QTD <span class="req">*</span></label><input type="number" id="f20" data-json="proc_1_qtd" min="1" value="1" required></div>
+          
+          <!-- Principal -->
+          <div class="row" style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #e2e8f0;">
+            <div class="field w-4">
+              <label>Procedimento Principal</label>
+              <input type="text" id="f18_codigo" data-json="proc_1_codigo" readonly>
+            </div>
+            <div class="field w-full">
+              <label>Nome</label>
+              <input type="text" id="f18_nome" readonly>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f18_qtd" data-json="proc_1_qtd" readonly>
+            </div>
           </div>
+
+          <!-- Secundários -->
+          <div class="procedimento-secundario">
+            <div class="field">
+              <label>Procedimento Secundário 1</label>
+              <input type="text" id="f21" data-json="proc_2_codigo" readonly>
+            </div>
+            <div class="field">
+              <label>Nome do Procedimento</label>
+              <input type="text" id="f21_nome" readonly>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f21_qtd" data-json="proc_2_qtd" readonly>
+            </div>
+          </div>
+
+          <div class="procedimento-secundario">
+            <div class="field">
+              <label>Procedimento Secundário 2</label>
+              <input type="text" id="f24" data-json="proc_3_codigo" readonly>
+            </div>
+            <div class="field">
+              <label>Nome do Procedimento</label>
+              <input type="text" id="f24_nome" readonly>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f24_qtd" data-json="proc_3_qtd" readonly>
+            </div>
+          </div>
+
+          <div class="procedimento-secundario" id="row_escolha" style="display:none">
+            <div class="field w-full">
+              <label>Selecione o 3º Procedimento (Opcional)</label>
+              <select id="f_opcao_secundario" onchange="onOpcaoSecundarioChange()">
+                <option value="">— Selecione —</option>
+                <!-- As opções serão inseridas via JS -->
+              </select>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f_opcao_secundario_qtd" data-json="proc_4_qtd" readonly>
+            </div>
+          </div>
+
         </div>
       </div>
+
       <div class="section">
         <div class="section-head"><h2><span class="section-num">5</span>Justificativa (CID)</h2></div>
         <div class="section-body">
@@ -302,10 +337,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
             </div>
           </div>
         </div>
-      </div>
-      <div class="section">
-        <div class="section-head"><h2><span class="section-num">6</span>Procedimentos Secundários</h2></div>
-        <div class="section-body" id="secundariosContainer"></div>
       </div>
     </form>
     <div class="actions">
@@ -376,38 +407,75 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 /* =========================================================
    CONFIGURAÇÃO DE URL CHUMBADA (EQUIPE)
    ========================================================= */
-const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbytHzOJuWZwCB221Hih4c00OHWM1r3mRsCsFXGFCC-0BkNKEAP2QS47M45VRR2siwdn/exec'; 
+const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbyK0WHl1z-pU-oMq6gwmHJCKS6jr-L4XrqCSsTke3D-QsFInQdf3TrfRh3kiN7BYoc9/exec'; 
 
 const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531447', cnes_executante: '8531447', nome_executante: 'AMBULATORIO DE VALENCA CENTRO' };
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
-const ESPECIALISTAS = {
-  'cardiologia_juliana': { nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120' },
-  'ginecologia_bianca': { nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250' },
-  'ginecologia_maria': { nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220' },
-  'ortopedia_ienner': { nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270' }
+
+// Configuração de procedimentos por especialista
+const REGRAS_PROCEDIMENTOS = {
+  'cardiologia_juliana': {
+    nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120',
+    proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: null, // Usa dropdown
+    opcoes_proc_3: [
+      { cod: '0211020036', nome: 'ELETROCARDIOGRAMA' },
+      { cod: '0204030153', nome: 'RADIOGRAFIA DE TORAX (PA E PERFIL)' }
+    ]
+  },
+  'ginecologia_bianca': {
+    nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250',
+    proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA', qtd: 1 }
+  },
+  'ginecologia_maria': {
+    nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220',
+    proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA', qtd: 1 }
+  },
+  'ortopedia_ienner': {
+    nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270',
+    proc_1: { cod: '0903010011', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: null, // Usa dropdown
+    opcoes_proc_3: [
+      { cod: '0204020034', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO + OBLIQ)' },
+      { cod: '0204020042', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO / FLEXAO)' },
+      { cod: '0204020077', nome: 'RADIOGRAFIA DE COLUNA LOMBO-SACRA (C/ OBLIQUAS)' },
+      { cod: '0204020085', nome: 'RADIOGRAFIA DE COLUNA LOMBO-SACRA FUNCIONAL / DINAMICA' },
+      { cod: '0204020093', nome: 'RADIOGRAFIA DE COLUNA TORACICA (AP + LATERAL)' },
+      { cod: '0204020107', nome: 'RADIOGRAFIA DE COLUNA TORACO-LOMBAR' },
+      { cod: '0204020131', nome: 'RADIOGRAFIA PANORAMICA DE COLUNA TOTAL' },
+      { cod: '0204040035', nome: 'RADIOGRAFIA DE ARTICULACAO ESCAPULO-UMERAL' },
+      { cod: '0204040078', nome: 'RADIOGRAFIA DE COTOVELO' },
+      { cod: '0204040094', nome: 'RADIOGRAFIA DE MAO' },
+      { cod: '0204040116', nome: 'RADIOGRAFIA DE ESCAPULA/OMBRO (TRES POSICOES)' },
+      { cod: '0204040124', nome: 'RADIOGRAFIA DE PUNHO (AP + LATERAL + OBLIQUA)' },
+      { cod: '0204060060', nome: 'RADIOGRAFIA DE ARTICULACAO COXO-FEMORAL' },
+      { cod: '0204060095', nome: 'RADIOGRAFIA DE BACIA' },
+      { cod: '0204060109', nome: 'RADIOGRAFIA DE CALCANEO' },
+      { cod: '0204060125', nome: 'RADIOGRAFIA DE JOELHO (AP + LATERAL)' },
+      { cod: '0204060133', nome: 'RADIOGRAFIA DE JOELHO OU PATELA (AP + LAT + AXIAL)' },
+      { cod: '0204060141', nome: 'RADIOGRAFIA DE JOELHO OU PATELA (AP + LAT + OBLIQUA)' },
+      { cod: '0204060150', nome: 'RADIOGRAFIA DE PE / DEDOS DO PE' },
+      { cod: '0204060176', nome: 'RADIOGRAFIA PANORAMICA DE MEMBROS INFERIORES' }
+    ]
+  }
 };
 
 function gerarId(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
 function formatarData(v){if(!v||v.length!==8)return v||'';return v.slice(6,8)+'/'+v.slice(4,6)+'/'+v.slice(0,4)}
 function formatarDataHora(iso){if(!iso)return'';try{return new Date(iso).toLocaleString('pt-BR')}catch{return iso}}
-function formatarCPF(v){v=(v||'').replace(/\D/g,'');if(v.length!==11)return v;return v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11)}
-function formatarCEP(v){v=(v||'').replace(/\D/g,'');if(v.length!==8)return v;return v.slice(0,5)+'-'+v.slice(5)}
+function formatarCPF(v){v=String(v||'').replace(/\D/g,'');if(v.length!==11)return v;return v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11)}
+function formatarCEP(v){v=String(v||'').replace(/\D/g,'');if(v.length!==8)return v;return v.slice(0,5)+'-'+v.slice(5)}
 function formatarRaca(v){const m={'01':'Branca','02':'Preta','03':'Parda','04':'Amarela','05':'Indígena','99':'Sem informação'};return m[v]||v||''}
 function formatarSexo(v){return v==='M'?'Masculino':v==='F'?'Feminino':(v||'')}
 function classeEsp(e){return e==='Cardiologia'?'cardio':e==='Ginecologia'?'gineco':e==='Ortopedia'?'orto':''}
 
-const containerSec = document.getElementById('secundariosContainer');
-[[21,22,23],[24,25,26],[27,28,29],[30,31,32],[33,34,35]].forEach(([cod, nome, qtd], i) => {
-  const procIndex = i + 2;
-  const div = document.createElement('div');
-  div.className = 'procedimento-secundario';
-  div.innerHTML = `
-    <div class="field"><label><span class="lbl-num">${cod}</span>Código</label><input type="text" id="f${cod}" data-json="proc_${procIndex}_codigo" maxlength="10" placeholder="0000000000"></div>
-    <div class="field" style="max-width:100px;"><label><span class="lbl-num">${qtd}</span>QTD</label><input type="number" id="f${qtd}" data-json="proc_${procIndex}_qtd" min="0" value="0"></div>
-  `;
-  containerSec.appendChild(div);
-});
-
+// Máscaras
 const mascaras={
   cns:v=>{v=v.replace(/\D/g,'').slice(0,15);return v.replace(/(\d{3})(\d{4})(\d{4})(\d{4})/,'$1 $2 $3 $4').replace(/(\d{3})(\d{4})(\d{4})/,'$1 $2 $3').replace(/(\d{3})(\d{4})/,'$1 $2')},
   cpf:v=>{v=v.replace(/\D/g,'').slice(0,11);return v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')},
@@ -431,27 +499,83 @@ document.querySelectorAll('.auto-upper').forEach(el => {
   });
 });
 
+// Preenche os procedimentos ao escolher o especialista
 function onEspecialidadeChange(){
   const key = document.getElementById('fEspecialidade').value;
-  const esp = ESPECIALISTAS[key];
+  const regra = REGRAS_PROCEDIMENTOS[key];
   const infoRow = document.getElementById('espInfoRow');
 
-  for(let i=1;i<=5;i++){
-    const cod = document.querySelector(`[data-json="proc_${i}_codigo"]`);
-    const qtd = document.querySelector(`[data-json="proc_${i}_qtd"]`);
-    if(cod) cod.value = '';
-    if(qtd) qtd.value = i === 1 ? 1 : 0;
-  }
+  // Limpa tudo antes de preencher
+  document.getElementById('f18_codigo').value = '';
+  document.getElementById('f18_nome').value = '';
+  document.getElementById('f18_qtd').value = 0;
+  document.getElementById('f21').value = '';
+  document.getElementById('f21_nome').value = '';
+  document.getElementById('f21_qtd').value = 0;
+  document.getElementById('f24').value = '';
+  document.getElementById('f24_nome').value = '';
+  document.getElementById('f24_qtd').value = 0;
+  document.getElementById('row_escolha').style.display = 'none';
+  document.getElementById('f_opcao_secundario').innerHTML = '<option value="">— Selecione —</option>';
 
-  if(!esp){ infoRow.style.display = 'none'; return; }
+  if(!regra){ infoRow.style.display = 'none'; return; }
 
+  // Preenche o preview do especialista
   infoRow.style.display = 'grid';
-  document.getElementById('espNome').textContent = esp.nome;
-  document.getElementById('espCns').textContent = esp.cns ? mascaras.cns(esp.cns) : 'Não configurado';
-  document.getElementById('espCbo').textContent = esp.cbo || 'Não configurado';
-  document.getElementById('f41').value = esp.nome;
-  document.getElementById('fcnsEsp').value = esp.cns || '';
-  document.getElementById('fcbo').value = esp.cbo || '';
+  document.getElementById('espNome').textContent = regra.nome;
+  document.getElementById('espCns').textContent = regra.cns ? mascaras.cns(regra.cns) : 'Não configurado';
+  document.getElementById('espCbo').textContent = regra.cbo || 'Não configurado';
+  document.getElementById('f41').value = regra.nome;
+  document.getElementById('fcnsEsp').value = regra.cns || '';
+  document.getElementById('fcbo').value = regra.cbo || '';
+
+  // Preenche Proc 1 (Principal)
+  document.getElementById('f18_codigo').value = regra.proc_1.cod;
+  document.getElementById('f18_nome').value = regra.proc_1.nome;
+  document.getElementById('f18_qtd').value = regra.proc_1.qtd;
+  
+  // Preenche Proc 2 (Secundário 1)
+  document.getElementById('f21').value = regra.proc_2.cod;
+  document.getElementById('f21_nome').value = regra.proc_2.nome;
+  document.getElementById('f21_qtd').value = regra.proc_2.qtd;
+
+  // Preenche Proc 3 (Secundário 2) - Fixo ou Dropdown
+  if(regra.proc_3_fixo) {
+    document.getElementById('f24').value = regra.proc_3_fixo.cod;
+    document.getElementById('f24_nome').value = regra.proc_3_fixo.nome;
+    document.getElementById('f24_qtd').value = regra.proc_3_fixo.qtd;
+  } else if (regra.opcoes_proc_3) {
+    document.getElementById('row_escolha').style.display = 'grid';
+    const select = document.getElementById('f_opcao_secundario');
+    regra.opcoes_proc_3.forEach(op => {
+      const opt = document.createElement('option');
+      opt.value = op.cod;
+      opt.textContent = `${op.cod} - ${op.nome}`;
+      select.appendChild(opt);
+    });
+    document.getElementById('f_opcao_secundario_qtd').value = 1; // QTD padrão
+  }
+}
+
+function onOpcaoSecundarioChange() {
+  const select = document.getElementById('f_opcao_secundario');
+  const cod = select.value;
+  const key = document.getElementById('fEspecialidade').value;
+  const regra = REGRAS_PROCEDIMENTOS[key];
+  
+  if (!cod) {
+    document.getElementById('f24').value = '';
+    document.getElementById('f24_nome').value = '';
+    document.getElementById('f24_qtd').value = 0;
+    return;
+  }
+  
+  const opcao = regra.opcoes_proc_3.find(o => o.cod === cod);
+  if(opcao) {
+    document.getElementById('f24').value = opcao.cod;
+    document.getElementById('f24_nome').value = opcao.nome;
+    document.getElementById('f24_qtd').value = 1;
+  }
 }
 
 function coletarDados(){
@@ -474,7 +598,7 @@ function coletarDados(){
   d.doc_profissional_autorizador = AUTORIZADOR.cns;
   d.tipo_doc_autorizador = AUTORIZADOR.tipo_doc;
   const key = document.getElementById('fEspecialidade')?.value || '';
-  const esp = ESPECIALISTAS[key];
+  const esp = REGRAS_PROCEDIMENTOS[key];
   d.especialidade_key = key;
   d.especialidade = esp?.especialidade || '';
   d.profissional_solicitante = document.getElementById('f41').value || '';
@@ -526,15 +650,21 @@ async function salvarNoHistorico(){
     if(i>=0){
       h[i]={...h[i],...dados,_atualizado_em:agora};setHistorico(h);
       mostrarToast('APAC atualizada com sucesso');
-      if(getSheetsUrl()) await sincronizarComSheets(h[i],'atualizar');
       editandoId=null;
+      if(getSheetsUrl()){
+        const ok = await sincronizarComSheets(h.find(a=>a._id===dados._id) || h[i], 'atualizar');
+        if(!ok) mostrarToast('Salvo localmente, mas FALHOU ao enviar para a nuvem (ver console)', true);
+      }
     }
   }else{
     dados._id=gerarId();dados._criado_em=agora;dados._atualizado_em=agora;
     dados._exportado=false;dados._sincronizado=false;
     h.unshift(dados);setHistorico(h);
     mostrarToast('APAC salva no histórico');
-    if(getSheetsUrl()){ await sincronizarComSheets(dados,'criar'); }
+    if(getSheetsUrl()){
+      const ok = await sincronizarComSheets(dados, 'criar');
+      if(!ok) mostrarToast('Salvo localmente, mas FALHOU ao enviar para a nuvem (ver console)', true);
+    }
   }
   localStorage.removeItem(RASC_KEY);
   novaApac();renderHistorico();
@@ -547,10 +677,18 @@ function novaApac(){
   document.querySelector('input[name="f07"][value="M"]').checked=false;
   document.getElementById('fEspecialidade').value='';
   document.getElementById('espInfoRow').style.display='none';
-  for(let i=1;i<=5;i++){
-    document.querySelector(`[data-json="proc_${i}_codigo"]`).value = '';
-    document.querySelector(`[data-json="proc_${i}_qtd"]`).value = i === 1 ? 1 : 0;
-  }
+  
+  document.getElementById('f18_codigo').value = '';
+  document.getElementById('f18_nome').value = '';
+  document.getElementById('f18_qtd').value = 0;
+  document.getElementById('f21').value = '';
+  document.getElementById('f21_nome').value = '';
+  document.getElementById('f21_qtd').value = 0;
+  document.getElementById('f24').value = '';
+  document.getElementById('f24_nome').value = '';
+  document.getElementById('f24_qtd').value = 0;
+  document.getElementById('row_escolha').style.display = 'none';
+
   editandoId=null;window.scrollTo({top:0,behavior:'smooth'});
 }
 function limparFormulario(){if(confirm('Limpar formulário? (APACs salvas não serão apagadas)'))novaApac()}
@@ -564,13 +702,22 @@ async function carregarNoFormulario(id){
   });
   document.querySelectorAll('[data-mask]').forEach(el=>{ const t=el.dataset.mask;if(mascaras[t]&&el.value)el.value=mascaras[t](el.value); });
   if(ap.sexo)document.querySelector(`input[name="f07"][value="${ap.sexo}"]`).checked=true;
+  
   if(ap.especialidade_key){
     document.getElementById('fEspecialidade').value = ap.especialidade_key; onEspecialidadeChange();
-    for(let i=1;i<=5;i++){
-      if(ap[`proc_${i}_codigo`]!==undefined){
-        document.querySelector(`[data-json="proc_${i}_codigo"]`).value = ap[`proc_${i}_codigo`];
-        document.querySelector(`[data-json="proc_${i}_qtd"]`).value = ap[`proc_${i}_qtd`] || 0;
-      }
+    
+    document.getElementById('f18_codigo').value = ap.proc_1_codigo || '';
+    document.getElementById('f18_qtd').value = ap.proc_1_qtd || 0;
+    document.getElementById('f21').value = ap.proc_2_codigo || '';
+    document.getElementById('f21_qtd').value = ap.proc_2_qtd || 0;
+    document.getElementById('f24').value = ap.proc_3_codigo || '';
+    document.getElementById('f24_qtd').value = ap.proc_3_qtd || 0;
+    
+    if (ap.proc_4_codigo) {
+       document.getElementById('row_escolha').style.display = 'grid';
+       document.getElementById('f_opcao_secundario').value = ap.proc_4_codigo;
+       onOpcaoSecundarioChange();
+       document.getElementById('f_opcao_secundario_qtd').value = ap.proc_4_qtd || 1;
     }
   }
   editandoId=id;mostrarAba('form');window.scrollTo({top:0,behavior:'smooth'});
@@ -602,7 +749,7 @@ function lerFiltros(){
 }
 function filtrarHistorico(){
   lerFiltros();let l=getHistorico();
-  if(filtroAtual.busca){const b=filtroAtual.busca; l=l.filter(a=>(a.nome_paciente||'').toLowerCase().includes(b)||(a.cpf_paciente||'').includes(b.replace(/\D/g,''))||(a.procedimento_principal||'').includes(b))}
+  if(filtroAtual.busca){const b=filtroAtual.busca; l=l.filter(a=>String(a.nome_paciente||'').toLowerCase().includes(b)||String(a.cpf_paciente||'').includes(b.replace(/\D/g,''))||String(a.procedimento_principal||'').includes(b))}
   if(filtroAtual.status==='pendente')l=l.filter(a=>!a._exportado);
   if(filtroAtual.status==='exportado')l=l.filter(a=>a._exportado);
   if(filtroAtual.especialidade!=='todos')l=l.filter(a=>a.especialidade===filtroAtual.especialidade);
@@ -648,27 +795,35 @@ document.getElementById('filterEspecialidade')?.addEventListener('change',render
 function getSelecionados(){return Array.from(document.querySelectorAll('.row-check:checked')).map(c=>c.dataset.id)}
 async function marcarSelecionadosExportados(){
   const ids=getSelecionados();if(!ids.length){mostrarToast('Selecione pelo menos uma APAC',true);return}
+  
   const h=getHistorico();
-  const promessas=[];
+  const promessas = [];
   h.forEach(a=>{
-    if(ids.includes(a._id)) {
-      a._exportado = true;
+    if(ids.includes(a._id)){
+      a._exportado=true;
       a._atualizado_em = new Date().toISOString();
-      if (getSheetsUrl()) promessas.push(sincronizarComSheets(a, 'atualizar'));
+      if(getSheetsUrl()) promessas.push(sincronizarComSheets(a, 'atualizar'));
     }
   });
   setHistorico(h);renderHistorico();
-  if (promessas.length) await Promise.all(promessas);
+  
+  if(promessas.length > 0){
+    mostrarToast('Salvando status na nuvem...');
+    await Promise.all(promessas);
+  }
   mostrarToast(`${ids.length} APAC(s) marcada(s) como exportada(s)`);
 }
+
 async function excluirSelecionados(){
   const ids=getSelecionados();if(!ids.length){mostrarToast('Selecione pelo menos uma APAC',true);return}
   if(!confirm(`Excluir ${ids.length} APAC(s)?`))return;
   const h=getHistorico();const rem=h.filter(a=>ids.includes(a._id));
   setHistorico(h.filter(a=>!ids.includes(a._id)));renderHistorico();
   mostrarToast(`${ids.length} APAC(s) excluída(s)`);
-  if(getSheetsUrl()) {
-    for(const a of rem) await sincronizarComSheets(a,'deletar');
+  if(getSheetsUrl()){
+    for(const a of rem){
+      await sincronizarComSheets(a,'deletar');
+    }
   }
 }
 
@@ -744,26 +899,34 @@ function getSheetsUrl(){return MINHA_URL_SHEETS || localStorage.getItem(SHEETS_U
 function salvarSheetsUrl(u){ localStorage.setItem(SHEETS_URL_KEY,u); }
 function toggleAutoSync(v){localStorage.setItem(AUTOSYNC_KEY,v?'1':'0')}
 
-async function sincronizarComSheets(dados,acao){
-  const url=getSheetsUrl();if(!url)return false;
+async function sincronizarComSheets(dados, acao){
+  const url = getSheetsUrl();
+  if(!url){ console.warn('URL do Sheets não configurada'); return false; }
   try{
     const resposta = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ acao: acao || 'criar', dados })
+      body: JSON.stringify({ acao: acao || 'criar', dados: dados })
     });
     const texto = await resposta.text();
     let resultado;
-    try { resultado = JSON.parse(texto); } catch(e) { console.error("Erro ao ler resposta:", texto); return false; }
-    
+    try { resultado = JSON.parse(texto); }
+    catch(parseErr){
+      console.error('Resposta não é JSON. Conteúdo recebido:', texto);
+      return false;
+    }
     if(resultado && resultado.ok){
-      const h=getHistorico();const i=h.findIndex(a=>a._id===dados._id); 
-      if(i>=0){h[i]._sincronizado=true;setHistorico(h)} 
+      const h = getHistorico();
+      const i = h.findIndex(a => a._id === dados._id);
+      if(i >= 0){ h[i]._sincronizado = true; setHistorico(h); }
       return true;
     }
+    console.warn('Sync retornou erro do servidor:', resultado);
+    return false;
+  } catch(e){
+    console.error('Falha de rede/CORS no sync:', e);
     return false;
   }
-  catch(e){console.warn('Sync falhou:',e);return false}
 }
 
 async function puxarDoSheets(){
@@ -792,11 +955,16 @@ async function puxarDoSheets(){
       });
 
       const l=mapa.get(r._id); 
-      if(!l){loc.unshift(r);add++} 
-      else if(new Date(r._atualizado_em)>new Date(l._atualizado_em)){
-        const eraExportado = (l._exportado === true || l._exportado === 'true' || l._exportado === 'TRUE');
-        Object.assign(l,r);
-        if(eraExportado) l._exportado = true;
+      if(!l){
+        loc.unshift(r);
+        add++;
+      } 
+      else if(new Date(r._atualizado_em) > new Date(l._atualizado_em)){
+        const statusLocalExportado = (l._exportado === true || l._exportado === 'true' || l._exportado === 'TRUE');
+        Object.assign(l, r);
+        if (statusLocalExportado) {
+           l._exportado = true; 
+        }
         atual++;
       }
     }); 
@@ -858,7 +1026,22 @@ if (sessionStorage.getItem('apac_logado') === 'sim') {
       if(confirm('Existe um rascunho não salvo. Deseja recuperá-lo?')){
         const d=JSON.parse(localStorage.getItem(RASC_KEY));
         document.querySelectorAll('[data-json]').forEach(el=>{ const k=el.dataset.json; if(d[k]!==undefined){let v=d[k];if(el.type==='date'&&v&&v.length===8)v=v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8);el.value=v} });
-        if(d.especialidade_key){ document.getElementById('fEspecialidade').value=d.especialidade_key; onEspecialidadeChange(); for(let i=1;i<=5;i++){ if(d[`proc_${i}_codigo`]){ document.querySelector(`[data-json="proc_${i}_codigo"]`).value = d[`proc_${i}_codigo`]; document.querySelector(`[data-json="proc_${i}_qtd"]`).value = d[`proc_${i}_qtd`] || 0; } } }
+        if(d.especialidade_key){ 
+          document.getElementById('fEspecialidade').value=d.especialidade_key; 
+          onEspecialidadeChange(); 
+          document.getElementById('f18_codigo').value = d.proc_1_codigo || '';
+          document.getElementById('f18_qtd').value = d.proc_1_qtd || 0;
+          document.getElementById('f21').value = d.proc_2_codigo || '';
+          document.getElementById('f21_qtd').value = d.proc_2_qtd || 0;
+          document.getElementById('f24').value = d.proc_3_codigo || '';
+          document.getElementById('f24_qtd').value = d.proc_3_qtd || 0;
+          if(d.proc_4_codigo) {
+            document.getElementById('row_escolha').style.display = 'grid';
+            document.getElementById('f_opcao_secundario').value = d.proc_4_codigo;
+            onOpcaoSecundarioChange();
+            document.getElementById('f_opcao_secundario_qtd').value = d.proc_4_qtd || 1;
+          }
+        }
       }
     },300);
   }
