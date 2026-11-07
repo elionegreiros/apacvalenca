@@ -420,13 +420,21 @@ const REGRAS_PROCEDIMENTOS = {
     nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250',
     proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA', qtd: 1 }
+    proc_3_fixo: null, // Libera o Dropdown
+    opcoes_proc_3: [
+      { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA' },
+      { cod: '0205020186', nome: 'ULTRASSONOGRAFIA TRANSVAGINAL' }
+    ]
   },
   'ginecologia_maria': {
     nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220',
     proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
-    proc_3_fixo: { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA', qtd: 1 }
+    proc_3_fixo: null, // Libera o Dropdown
+    opcoes_proc_3: [
+      { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA' },
+      { cod: '0205020186', nome: 'ULTRASSONOGRAFIA TRANSVAGINAL' }
+    ]
   },
   'ortopedia_ienner': {
     nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270',
