@@ -158,9 +158,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 </head>
 <body>
 
-<!-- ========================================================= -->
-<!-- TELA DE LOGIN (BLOQUEIO DE ACESSO) -->
-<!-- ========================================================= -->
+<!-- TELA DE LOGIN -->
 <div id="telaLogin" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#f8fafc;z-index:999999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="background:#ffffff;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.05);width:100%;max-width:380px;border:1px solid #e2e8f0;">
     <div style="text-align:center;margin-bottom:30px;">
@@ -211,7 +209,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
       <svg class="icon" viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
       Histórico <span class="badge" id="tabCount">0</span>
     </button>
-    <!-- ABA DE CONFIGURAÇÕES OCULTA PARA A EQUIPE -->
   </nav>
 
   <div class="view active" id="view-form">
@@ -287,15 +284,76 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           <input type="hidden" id="fcbo" data-json="cbo" readonly>
         </div>
       </div>
+      
+      <!-- PROCEDIMENTOS -->
       <div class="section">
-        <div class="section-head"><h2><span class="section-num">4</span>Procedimento Solicitado</h2></div>
+        <div class="section-head"><h2><span class="section-num">4</span>Procedimentos</h2></div>
         <div class="section-body">
-          <div class="procedimento-principal">
-            <div class="field"><label><span class="lbl-num">18</span>Código <span class="req">*</span></label><input type="text" id="f18" data-json="proc_1_codigo" maxlength="10" required placeholder="0000000000"></div>
-            <div class="field" style="max-width:100px;"><label><span class="lbl-num">20</span>QTD <span class="req">*</span></label><input type="number" id="f20" data-json="proc_1_qtd" min="1" value="1" required></div>
+          
+          <!-- Principal -->
+          <div class="row" style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #e2e8f0;">
+            <div class="field w-4">
+              <label>Procedimento Principal</label>
+              <input type="text" id="f18_codigo" data-json="proc_1_codigo" readonly>
+            </div>
+            <div class="field w-full">
+              <label>Nome</label>
+              <input type="text" id="f18_nome" readonly>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f18_qtd" data-json="proc_1_qtd" readonly>
+            </div>
           </div>
+
+          <!-- Secundários -->
+          <div class="procedimento-secundario">
+            <div class="field">
+              <label>Procedimento Secundário 1</label>
+              <input type="text" id="f21" data-json="proc_2_codigo" readonly>
+            </div>
+            <div class="field">
+              <label>Nome do Procedimento</label>
+              <input type="text" id="f21_nome" readonly>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f21_qtd" data-json="proc_2_qtd" readonly>
+            </div>
+          </div>
+
+          <div class="procedimento-secundario">
+            <div class="field">
+              <label>Procedimento Secundário 2</label>
+              <input type="text" id="f24" data-json="proc_3_codigo" readonly>
+            </div>
+            <div class="field">
+              <label>Nome do Procedimento</label>
+              <input type="text" id="f24_nome" readonly>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f24_qtd" data-json="proc_3_qtd" readonly>
+            </div>
+          </div>
+
+          <div class="procedimento-secundario" id="row_escolha" style="display:none">
+            <div class="field w-full">
+              <label>Selecione o 3º Procedimento (Opcional)</label>
+              <select id="f_opcao_secundario" onchange="onOpcaoSecundarioChange()">
+                <option value="">— Selecione —</option>
+                <!-- As opções serão inseridas via JS -->
+              </select>
+            </div>
+            <div class="field w-2">
+              <label>QTD</label>
+              <input type="number" id="f_opcao_secundario_qtd" data-json="proc_4_qtd" readonly>
+            </div>
+          </div>
+
         </div>
       </div>
+
       <div class="section">
         <div class="section-head"><h2><span class="section-num">5</span>Justificativa (CID)</h2></div>
         <div class="section-body">
@@ -306,10 +364,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
             </div>
           </div>
         </div>
-      </div>
-      <div class="section">
-        <div class="section-head"><h2><span class="section-num">6</span>Procedimentos Secundários</h2></div>
-        <div class="section-body" id="secundariosContainer"></div>
       </div>
     </form>
     <div class="actions">
@@ -384,34 +438,71 @@ const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbytHzOJuWZwCB2
 
 const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531447', cnes_executante: '8531447', nome_executante: 'AMBULATORIO DE VALENCA CENTRO' };
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
-const ESPECIALISTAS = {
-  'cardiologia_juliana': { nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120' },
-  'ginecologia_bianca': { nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250' },
-  'ginecologia_maria': { nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220' },
-  'ortopedia_ienner': { nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270' }
+
+// Configuração de procedimentos por especialista
+const REGRAS_PROCEDIMENTOS = {
+  'cardiologia_juliana': {
+    nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120',
+    proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: null, // Usa dropdown
+    opcoes_proc_3: [
+      { cod: '0211020036', nome: 'ELETROCARDIOGRAMA' },
+      { cod: '0204030153', nome: 'RADIOGRAFIA DE TORAX (PA E PERFIL)' }
+    ]
+  },
+  'ginecologia_bianca': {
+    nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250',
+    proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA', qtd: 1 }
+  },
+  'ginecologia_maria': {
+    nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220',
+    proc_1: { cod: '0906010020', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: { cod: '0205020160', nome: 'ULTRASSONOGRAFIA PELVICA', qtd: 1 }
+  },
+  'ortopedia_ienner': {
+    nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270',
+    proc_1: { cod: '0903010011', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: null, // Usa dropdown
+    opcoes_proc_3: [
+      { cod: '0204020034', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO + OBLIQ)' },
+      { cod: '0204020042', nome: 'RADIOGRAFIA DE COLUNA CERVICAL (AP + LAT + TO / FLEXAO)' },
+      { cod: '0204020077', nome: 'RADIOGRAFIA DE COLUNA LOMBO-SACRA (C/ OBLIQUAS)' },
+      { cod: '0204020085', nome: 'RADIOGRAFIA DE COLUNA LOMBO-SACRA FUNCIONAL / DINAMICA' },
+      { cod: '0204020093', nome: 'RADIOGRAFIA DE COLUNA TORACICA (AP + LATERAL)' },
+      { cod: '0204020107', nome: 'RADIOGRAFIA DE COLUNA TORACO-LOMBAR' },
+      { cod: '0204020131', nome: 'RADIOGRAFIA PANORAMICA DE COLUNA TOTAL' },
+      { cod: '0204040035', nome: 'RADIOGRAFIA DE ARTICULACAO ESCAPULO-UMERAL' },
+      { cod: '0204040078', nome: 'RADIOGRAFIA DE COTOVELO' },
+      { cod: '0204040094', nome: 'RADIOGRAFIA DE MAO' },
+      { cod: '0204040116', nome: 'RADIOGRAFIA DE ESCAPULA/OMBRO (TRES POSICOES)' },
+      { cod: '0204040124', nome: 'RADIOGRAFIA DE PUNHO (AP + LATERAL + OBLIQUA)' },
+      { cod: '0204060060', nome: 'RADIOGRAFIA DE ARTICULACAO COXO-FEMORAL' },
+      { cod: '0204060095', nome: 'RADIOGRAFIA DE BACIA' },
+      { cod: '0204060109', nome: 'RADIOGRAFIA DE CALCANEO' },
+      { cod: '0204060125', nome: 'RADIOGRAFIA DE JOELHO (AP + LATERAL)' },
+      { cod: '0204060133', nome: 'RADIOGRAFIA DE JOELHO OU PATELA (AP + LAT + AXIAL)' },
+      { cod: '0204060141', nome: 'RADIOGRAFIA DE JOELHO OU PATELA (AP + LAT + OBLIQUA)' },
+      { cod: '0204060150', nome: 'RADIOGRAFIA DE PE / DEDOS DO PE' },
+      { cod: '0204060176', nome: 'RADIOGRAFIA PANORAMICA DE MEMBROS INFERIORES' }
+    ]
+  }
 };
 
 function gerarId(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
 function formatarData(v){if(!v||v.length!==8)return v||'';return v.slice(6,8)+'/'+v.slice(4,6)+'/'+v.slice(0,4)}
 function formatarDataHora(iso){if(!iso)return'';try{return new Date(iso).toLocaleString('pt-BR')}catch{return iso}}
-function formatarCPF(v){v=(v||'').replace(/\D/g,'');if(v.length!==11)return v;return v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11)}
-function formatarCEP(v){v=(v||'').replace(/\D/g,'');if(v.length!==8)return v;return v.slice(0,5)+'-'+v.slice(5)}
+function formatarCPF(v){v=String(v||'').replace(/\D/g,'');if(v.length!==11)return v;return v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11)}
+function formatarCEP(v){v=String(v||'').replace(/\D/g,'');if(v.length!==8)return v;return v.slice(0,5)+'-'+v.slice(5)}
 function formatarRaca(v){const m={'01':'Branca','02':'Preta','03':'Parda','04':'Amarela','05':'Indígena','99':'Sem informação'};return m[v]||v||''}
 function formatarSexo(v){return v==='M'?'Masculino':v==='F'?'Feminino':(v||'')}
 function classeEsp(e){return e==='Cardiologia'?'cardio':e==='Ginecologia'?'gineco':e==='Ortopedia'?'orto':''}
 
-const containerSec = document.getElementById('secundariosContainer');
-[[21,22,23],[24,25,26],[27,28,29],[30,31,32],[33,34,35]].forEach(([cod, nome, qtd], i) => {
-  const procIndex = i + 2;
-  const div = document.createElement('div');
-  div.className = 'procedimento-secundario';
-  div.innerHTML = `
-    <div class="field"><label><span class="lbl-num">${cod}</span>Código</label><input type="text" id="f${cod}" data-json="proc_${procIndex}_codigo" maxlength="10" placeholder="0000000000"></div>
-    <div class="field" style="max-width:100px;"><label><span class="lbl-num">${qtd}</span>QTD</label><input type="number" id="f${qtd}" data-json="proc_${procIndex}_qtd" min="0" value="0"></div>
-  `;
-  containerSec.appendChild(div);
-});
-
+// Máscaras
 const mascaras={
   cns:v=>{v=v.replace(/\D/g,'').slice(0,15);return v.replace(/(\d{3})(\d{4})(\d{4})(\d{4})/,'$1 $2 $3 $4').replace(/(\d{3})(\d{4})(\d{4})/,'$1 $2 $3').replace(/(\d{3})(\d{4})/,'$1 $2')},
   cpf:v=>{v=v.replace(/\D/g,'').slice(0,11);return v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')},
@@ -435,27 +526,83 @@ document.querySelectorAll('.auto-upper').forEach(el => {
   });
 });
 
+// MÁGICA: Preenche os procedimentos ao escolher o especialista
 function onEspecialidadeChange(){
   const key = document.getElementById('fEspecialidade').value;
-  const esp = ESPECIALISTAS[key];
+  const regra = REGRAS_PROCEDIMENTOS[key];
   const infoRow = document.getElementById('espInfoRow');
 
-  for(let i=1;i<=5;i++){
-    const cod = document.querySelector(`[data-json="proc_${i}_codigo"]`);
-    const qtd = document.querySelector(`[data-json="proc_${i}_qtd"]`);
-    if(cod) cod.value = '';
-    if(qtd) qtd.value = i === 1 ? 1 : 0;
-  }
+  // Limpa tudo antes de preencher
+  document.getElementById('f18_codigo').value = '';
+  document.getElementById('f18_nome').value = '';
+  document.getElementById('f18_qtd').value = 0;
+  document.getElementById('f21').value = '';
+  document.getElementById('f21_nome').value = '';
+  document.getElementById('f21_qtd').value = 0;
+  document.getElementById('f24').value = '';
+  document.getElementById('f24_nome').value = '';
+  document.getElementById('f24_qtd').value = 0;
+  document.getElementById('row_escolha').style.display = 'none';
+  document.getElementById('f_opcao_secundario').innerHTML = '<option value="">— Selecione —</option>';
 
-  if(!esp){ infoRow.style.display = 'none'; return; }
+  if(!regra){ infoRow.style.display = 'none'; return; }
 
+  // Preenche o preview do especialista
   infoRow.style.display = 'grid';
-  document.getElementById('espNome').textContent = esp.nome;
-  document.getElementById('espCns').textContent = esp.cns ? mascaras.cns(esp.cns) : 'Não configurado';
-  document.getElementById('espCbo').textContent = esp.cbo || 'Não configurado';
-  document.getElementById('f41').value = esp.nome;
-  document.getElementById('fcnsEsp').value = esp.cns || '';
-  document.getElementById('fcbo').value = esp.cbo || '';
+  document.getElementById('espNome').textContent = regra.nome;
+  document.getElementById('espCns').textContent = regra.cns ? mascaras.cns(regra.cns) : 'Não configurado';
+  document.getElementById('espCbo').textContent = regra.cbo || 'Não configurado';
+  document.getElementById('f41').value = regra.nome;
+  document.getElementById('fcnsEsp').value = regra.cns || '';
+  document.getElementById('fcbo').value = regra.cbo || '';
+
+  // Preenche Proc 1 (Principal)
+  document.getElementById('f18_codigo').value = regra.proc_1.cod;
+  document.getElementById('f18_nome').value = regra.proc_1.nome;
+  document.getElementById('f18_qtd').value = regra.proc_1.qtd;
+  
+  // Preenche Proc 2 (Secundário 1)
+  document.getElementById('f21').value = regra.proc_2.cod;
+  document.getElementById('f21_nome').value = regra.proc_2.nome;
+  document.getElementById('f21_qtd').value = regra.proc_2.qtd;
+
+  // Preenche Proc 3 (Secundário 2) - Fixo ou Dropdown
+  if(regra.proc_3_fixo) {
+    document.getElementById('f24').value = regra.proc_3_fixo.cod;
+    document.getElementById('f24_nome').value = regra.proc_3_fixo.nome;
+    document.getElementById('f24_qtd').value = regra.proc_3_fixo.qtd;
+  } else if (regra.opcoes_proc_3) {
+    document.getElementById('row_escolha').style.display = 'grid';
+    const select = document.getElementById('f_opcao_secundario');
+    regra.opcoes_proc_3.forEach(op => {
+      const opt = document.createElement('option');
+      opt.value = op.cod;
+      opt.textContent = `${op.cod} - ${op.nome}`;
+      select.appendChild(opt);
+    });
+    document.getElementById('f_opcao_secundario_qtd').value = 1; // QTD padrão
+  }
+}
+
+function onOpcaoSecundarioChange() {
+  const select = document.getElementById('f_opcao_secundario');
+  const cod = select.value;
+  const key = document.getElementById('fEspecialidade').value;
+  const regra = REGRAS_PROCEDIMENTOS[key];
+  
+  if (!cod) {
+    document.getElementById('f24').value = '';
+    document.getElementById('f24_nome').value = '';
+    document.getElementById('f24_qtd').value = 0;
+    return;
+  }
+  
+  const opcao = regra.opcoes_proc_3.find(o => o.cod === cod);
+  if(opcao) {
+    document.getElementById('f24').value = opcao.cod;
+    document.getElementById('f24_nome').value = opcao.nome;
+    document.getElementById('f24_qtd').value = 1;
+  }
 }
 
 function coletarDados(){
@@ -476,7 +623,7 @@ function coletarDados(){
   d.doc_profissional_autorizador = AUTORIZADOR.cns;
   d.tipo_doc_autorizador = AUTORIZADOR.tipo_doc;
   const key = document.getElementById('fEspecialidade')?.value || '';
-  const esp = ESPECIALISTAS[key];
+  const esp = REGRAS_PROCEDIMENTOS[key];
   d.especialidade_key = key;
   d.especialidade = esp?.especialidade || '';
   d.profissional_solicitante = document.getElementById('f41').value || '';
@@ -549,10 +696,18 @@ function novaApac(){
   document.querySelector('input[name="f07"][value="M"]').checked=false;
   document.getElementById('fEspecialidade').value='';
   document.getElementById('espInfoRow').style.display='none';
-  for(let i=1;i<=5;i++){
-    document.querySelector(`[data-json="proc_${i}_codigo"]`).value = '';
-    document.querySelector(`[data-json="proc_${i}_qtd"]`).value = i === 1 ? 1 : 0;
-  }
+  
+  document.getElementById('f18_codigo').value = '';
+  document.getElementById('f18_nome').value = '';
+  document.getElementById('f18_qtd').value = 0;
+  document.getElementById('f21').value = '';
+  document.getElementById('f21_nome').value = '';
+  document.getElementById('f21_qtd').value = 0;
+  document.getElementById('f24').value = '';
+  document.getElementById('f24_nome').value = '';
+  document.getElementById('f24_qtd').value = 0;
+  document.getElementById('row_escolha').style.display = 'none';
+
   editandoId=null;window.scrollTo({top:0,behavior:'smooth'});
 }
 function limparFormulario(){if(confirm('Limpar formulário? (APACs salvas não serão apagadas)'))novaApac()}
@@ -566,13 +721,23 @@ async function carregarNoFormulario(id){
   });
   document.querySelectorAll('[data-mask]').forEach(el=>{ const t=el.dataset.mask;if(mascaras[t]&&el.value)el.value=mascaras[t](el.value); });
   if(ap.sexo)document.querySelector(`input[name="f07"][value="${ap.sexo}"]`).checked=true;
+  
   if(ap.especialidade_key){
     document.getElementById('fEspecialidade').value = ap.especialidade_key; onEspecialidadeChange();
-    for(let i=1;i<=5;i++){
-      if(ap[`proc_${i}_codigo`]!==undefined){
-        document.querySelector(`[data-json="proc_${i}_codigo"]`).value = ap[`proc_${i}_codigo`];
-        document.querySelector(`[data-json="proc_${i}_qtd"]`).value = ap[`proc_${i}_qtd`] || 0;
-      }
+    
+    // Sobrescreve com os valores salvos, caso tenham sido editados manualmente antes
+    document.getElementById('f18_codigo').value = ap.proc_1_codigo || '';
+    document.getElementById('f18_qtd').value = ap.proc_1_qtd || 0;
+    document.getElementById('f21').value = ap.proc_2_codigo || '';
+    document.getElementById('f21_qtd').value = ap.proc_2_qtd || 0;
+    document.getElementById('f24').value = ap.proc_3_codigo || '';
+    document.getElementById('f24_qtd').value = ap.proc_3_qtd || 0;
+    
+    if (ap.proc_4_codigo) {
+       document.getElementById('row_escolha').style.display = 'grid';
+       document.getElementById('f_opcao_secundario').value = ap.proc_4_codigo;
+       onOpcaoSecundarioChange();
+       document.getElementById('f_opcao_secundario_qtd').value = ap.proc_4_qtd || 1;
     }
   }
   editandoId=id;mostrarAba('form');window.scrollTo({top:0,behavior:'smooth'});
@@ -590,7 +755,7 @@ function mostrarAba(n){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${n}`));
   if(n==='historico'){
     renderHistorico();
-    setTimeout(renderHistorico, 50); // Força o desenho da tabela
+    setTimeout(renderHistorico, 50);
   }
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>mostrarAba(t.dataset.tab)));
@@ -604,7 +769,7 @@ function lerFiltros(){
 }
 function filtrarHistorico(){
   lerFiltros();let l=getHistorico();
-  if(filtroAtual.busca){const b=filtroAtual.busca; l=l.filter(a=>(a.nome_paciente||'').toLowerCase().includes(b)||(a.cpf_paciente||'').includes(b.replace(/\D/g,''))||(a.procedimento_principal||'').includes(b))}
+  if(filtroAtual.busca){const b=filtroAtual.busca; l=l.filter(a=>String(a.nome_paciente||'').toLowerCase().includes(b)||String(a.cpf_paciente||'').includes(b.replace(/\D/g,''))||String(a.procedimento_principal||'').includes(b))}
   if(filtroAtual.status==='pendente')l=l.filter(a=>!a._exportado);
   if(filtroAtual.status==='exportado')l=l.filter(a=>a._exportado);
   if(filtroAtual.especialidade!=='todos')l=l.filter(a=>a.especialidade===filtroAtual.especialidade);
@@ -757,7 +922,6 @@ async function puxarDoSheets(){
     let add=0,atual=0; 
     
     rem.forEach(r=>{
-      // ⬇️ BLINDAGEM: Converte todos os campos para texto para não quebrar no .replace
       Object.keys(r).forEach(k => {
         if (r[k] !== null && r[k] !== undefined) {
           r[k] = String(r[k]);
@@ -829,7 +993,22 @@ if (sessionStorage.getItem('apac_logado') === 'sim') {
       if(confirm('Existe um rascunho não salvo. Deseja recuperá-lo?')){
         const d=JSON.parse(localStorage.getItem(RASC_KEY));
         document.querySelectorAll('[data-json]').forEach(el=>{ const k=el.dataset.json; if(d[k]!==undefined){let v=d[k];if(el.type==='date'&&v&&v.length===8)v=v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8);el.value=v} });
-        if(d.especialidade_key){ document.getElementById('fEspecialidade').value=d.especialidade_key; onEspecialidadeChange(); for(let i=1;i<=5;i++){ if(d[`proc_${i}_codigo`]){ document.querySelector(`[data-json="proc_${i}_codigo"]`).value = d[`proc_${i}_codigo`]; document.querySelector(`[data-json="proc_${i}_qtd"]`).value = d[`proc_${i}_qtd`] || 0; } } }
+        if(d.especialidade_key){ 
+          document.getElementById('fEspecialidade').value=d.especialidade_key; 
+          onEspecialidadeChange(); 
+          document.getElementById('f18_codigo').value = d.proc_1_codigo || '';
+          document.getElementById('f18_qtd').value = d.proc_1_qtd || 0;
+          document.getElementById('f21').value = d.proc_2_codigo || '';
+          document.getElementById('f21_qtd').value = d.proc_2_qtd || 0;
+          document.getElementById('f24').value = d.proc_3_codigo || '';
+          document.getElementById('f24_qtd').value = d.proc_3_qtd || 0;
+          if(d.proc_4_codigo) {
+            document.getElementById('row_escolha').style.display = 'grid';
+            document.getElementById('f_opcao_secundario').value = d.proc_4_codigo;
+            onOpcaoSecundarioChange();
+            document.getElementById('f_opcao_secundario_qtd').value = d.proc_4_qtd || 1;
+          }
+        }
       }
     },300);
   }
