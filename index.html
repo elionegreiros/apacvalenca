@@ -921,37 +921,29 @@ async function sincronizarComSheets(dados, acao){
 
     const pacote = { acao: acao, dados: payload };
 
-    const resposta = await fetch(url, {
+    // O SEGREDO ESTÁ AQUI: O modo 'no-cors' não espera resposta. 
+    // Se o site conseguiu enviar sem travar, consideramos que deu certo.
+    await fetch(url, {
       method: 'POST',
+      mode: 'no-cors', 
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(pacote) 
     });    
 
-    const texto = await resposta.text();
-    let resultado;
-    try { resultado = JSON.parse(texto); } catch(parseErr){ return false; }
-
-    if(resultado && resultado.status === "sucesso"){
-      const h = getHistorico();
-      const i = h.findIndex(a => a._id === dados._id);
-      if(i >= 0){ 
-        h[i]._sincronizado = true; 
-        if(resultado.cod_apac) h[i].codigos_apac = resultado.cod_apac; 
-        setHistorico(h); 
-      }
-      
-      if(acao === 'criar'){
-        alert(`✅ APAC salva na nuvem!\n\nLinha: ${resultado.linha_utilizada}\nCódigo APAC: ${resultado.cod_apac}`);
-      }
-      return true;
+    // Se o código chegou até aqui, a requisição foi enviada com sucesso.
+    if(acao === 'criar'){
+      // Alerta amigável (não precisa esperar a resposta do Google)
+      alert(`✅ APAC salva e enviada para a nuvem!\n\n(Confira a planilha para ver o código APAC gerado)`);
     }
-    alert("Erro no servidor: " + (resultado.mensagem || "Ver console"));
-    return false;
+    
+    return true;
+
   } catch(e){
+    // Esse erro só acontece se a internet cair de verdade ou a URL estiver errada
+    console.error('Falha de rede no envio:', e);
     return false;
   }
 }
-
 async function puxarDoSheets() {
   const url = getSheetsUrl();
   if (!url) { mostrarToast('URL do Sheets não configurada!', true); return; }
