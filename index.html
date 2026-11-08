@@ -197,37 +197,57 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
       </div>
       <div class="section">
         <div class="section-head"><h2><span class="section-num">2</span>Identificação do Usuário</h2></div>
-        <div class="section-body">
-                              <div class="row">
-            <div class="field w-full"><label>Nome do Paciente <span class="req">*</span></label><input type="text" id="f03" data-json="nome_paciente" class="auto-upper" maxlength="30" required></div>
-            <div class="field w-4"><label>CPF <span class="req">*</span></label><input type="text" id="f05" data-json="cpf_paciente" data-mask="cpf" maxlength="14" required placeholder="000.000.000-00"></div>
+                <div class="section-body">
+          <div class="row">
+            <!-- Nome -->
+            <div class="field w-full" style="flex: 2 1 250px;">
+              <label>Nome do Paciente <span class="req">*</span></label>
+              <input type="text" id="f03" data-json="nome_paciente" class="auto-upper" maxlength="30" required>
+            </div>
+            <!-- CPF -->
+            <div class="field w-3">
+              <label>CPF <span class="req">*</span></label>
+              <input type="text" id="f05" data-json="cpf_paciente" data-mask="cpf" maxlength="14" required placeholder="000.000.000-00">
+            </div>
+            <!-- Data de Nascimento -->
+            <div class="field w-3">
+              <label>Data Nasc. <span class="req">*</span></label>
+              <input type="date" id="f06" data-json="data_nascimento" required onchange="calcularIdadeResponsavel()">
+            </div>
+            <!-- Raça / Cor -->
+            <div class="field w-4">
+              <label>Raça / Cor <span class="req">*</span></label>
+              <select id="f08" data-json="raca_cor" required>
+                <option value="">— Selecione —</option><option value="01">01 · Branca</option><option value="02">02 · Preta</option><option value="03">03 · Parda</option><option value="04">04 · Amarela</option><option value="05">05 · Indígena</option><option value="99">99 · Sem informação</option>
+              </select>
+            </div>
           </div>
+
           <div class="row">
             <div class="field w-half"><label>Nome da Mãe <span class="req">*</span></label><input type="text" id="f09" data-json="nome_mae" class="auto-upper" maxlength="30" required></div>
             <div class="field w-half"><label>Nome do Responsável <span class="req">*</span></label><input type="text" id="f11" data-json="nome_responsavel" class="auto-upper" maxlength="30" required></div>
           </div>
+
           <div class="row">
             <div class="field w-3"><label>CEP <span class="req">*</span></label><input type="text" id="f17" data-json="cep" data-mask="cep" maxlength="9" value="64300-000" required></div>
             <div class="field w-2"><label>Cód. Logradouro</label><input type="text" id="fcdlogr" data-json="cod_logradouro" maxlength="3" value="81"></div>
             <div class="field w-full"><label>Endereço (Rua / Av.) <span class="req">*</span></label><input type="text" id="f13" data-json="endereco" class="auto-upper" maxlength="30" required></div>
           </div>
+
           <div class="row">
             <div class="field w-3"><label>Número <span class="req">*</span></label><input type="text" id="fnum" data-json="numero" maxlength="10" required></div>
             <div class="field w-half"><label>Bairro <span class="req">*</span></label><input type="text" id="fbairro" data-json="bairro" class="auto-upper" maxlength="30" required></div>
             <div class="field w-1"><label>DDD</label><input type="text" id="f10a" data-json="telefone1_ddd" data-mask="ddd" maxlength="2" placeholder="00"></div>
             <div class="field w-3"><label>Telefone</label><input type="text" id="f10b" data-json="telefone1_num" data-mask="telefone" maxlength="10"></div>
           </div>
+
           <div class="row">
-            <div class="field w-4"><label>Data de Nascimento <span class="req">*</span></label><input type="date" id="f06" data-json="data_nascimento" required></div>
-            <div class="field w-5">
-              <label>Raça / Cor <span class="req">*</span></label>
-              <select id="f08" data-json="raca_cor" required>
-                <option value="">— Selecione —</option><option value="01">01 · Branca</option><option value="02">02 · Preta</option><option value="03">03 · Parda</option><option value="04">04 · Amarela</option><option value="05">05 · Indígena</option><option value="99">99 · Sem informação</option>
-              </select>
-            </div>
-            <div class="field w-5">
+            <div class="field w-full">
               <label>Sexo <span class="req">*</span></label>
-              <div class="radio-group"><label><input type="radio" name="f07" value="M" required> Masculino</label><label><input type="radio" name="f07" value="F"> Feminino</label></div>
+              <div class="radio-group" style="height: auto; padding-top: 5px;">
+                <label><input type="radio" name="f07" value="M" required> Masculino</label>
+                <label><input type="radio" name="f07" value="F"> Feminino</label>
+              </div>
             </div>
           </div>
         </div>
@@ -1044,6 +1064,55 @@ if (sessionStorage.getItem('apac_logado') === 'sim') {
   document.getElementById('telaLogin').style.display = 'none';
 }
 
+function calcularIdadeResponsavel() {
+  const dataNascInput = document.getElementById('f06').value;
+  const inputPaciente = document.getElementById('f03');
+  const inputResponsavel = document.getElementById('f11');
+  
+  if (!dataNascInput) return;
+
+  const dataNasc = new Date(dataNascInput);
+  const hoje = new Date();
+  
+  let idade = hoje.getFullYear() - dataNasc.getFullYear();
+  const mes = hoje.getMonth() - dataNasc.getMonth();
+  
+  // Ajuste fino para ver se já fez aniversário neste ano
+  if (mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) {
+    idade--;
+  }
+
+  if (idade >= 18) {
+    // MAIOR DE IDADE: Copia o nome do paciente e bloqueia
+    if (inputPaciente.value.trim() !== "") {
+      inputResponsavel.value = inputPaciente.value;
+      inputResponsavel.readOnly = true; // Trava o campo
+      inputResponsavel.style.background = 'var(--surface-alt)'; // Deixa cinza
+    }
+  } else {
+    // MENOR DE IDADE: Desbloqueia para digitar e puxa o nome da mãe
+    inputResponsavel.readOnly = false;
+    inputResponsavel.style.background = '#fff';
+    
+    const nomeMae = document.getElementById('f09').value;
+    if (nomeMae.trim() !== "") {
+      inputResponsavel.value = nomeMae;
+    }
+  }
+}
+
+// Sincroniza a regra se o Nome do Paciente for digitado DEPOIS da data de nascimento
+document.querySelectorAll('.auto-upper').forEach(el => {
+  el.addEventListener('input', (e) => {
+    let v = e.target.value;
+    v = v.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    e.target.value = v.toUpperCase();
+    
+    if (e.target.id === 'f03') { // Se o campo alterado for o Nome do Paciente
+      calcularIdadeResponsavel();
+    }
+  });
+});
 (function init(){
   localStorage.setItem(AUTOSYNC_KEY, '1');
   atualizarStats();renderHistorico();atualizarStatusTopbar();
