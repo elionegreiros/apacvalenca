@@ -952,22 +952,43 @@ async function sincronizarComSheets(dados, acao){
   }
 }
 
-async function puxarDoSheets(){
-  const url=getSheetsUrl();
-  if(!url){ mostrarToast('URL do Sheets não configurada!', true); return; }
+async function puxarDoSheets() {
+  const url = getSheetsUrl();
+  if (!url) { mostrarToast('URL do Sheets não configurada!', true); return; }
+  
   mostrarToast('Buscando dados da nuvem...');
   
-  try{ 
-    const r=await fetch(url+'?acao=listar');
-    const data=await r.json(); 
-    if(!data.ok)throw new Error(data.error||'resposta inválida'); 
+  try {
+    // Usando jsonp para evitar o erro de CORS
+    const script = document.createElement('script');
+    const callbackName = 'jsonpCallback_' + Date.now();
     
-    const rem=data.apacs||[];
-    const loc=getHistorico(); 
-    const mapa=new Map(loc.map(a=>[a._id,a])); 
-    let add=0,atual=0; 
+    // Criando uma Promise para esperar a resposta do script
+    const data = await new Promise((resolve, reject) => {
+      window[callbackName] = (response) => {
+        delete window[callbackName]; // Limpa a memória
+        document.body.removeChild(script);
+        resolve(response);
+      };
+      
+      script.src = url + '?acao=listar&callback=' + callbackName;
+      script.onerror = () => {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        reject(new Error('Falha ao carregar os dados da nuvem.'));
+      };
+      
+      document.body.appendChild(script);
+    });
+
+    if (!data.ok) throw new Error(data.error || 'Resposta inválida');
     
-    rem.forEach(r=>{
+    const rem = data.apacs || [];
+    const loc = getHistorico(); 
+    const mapa = new Map(loc.map(a => [a._id, a])); 
+    let add = 0, atual = 0; 
+    
+    rem.forEach(r => {
       Object.keys(r).forEach(k => {
         if (r[k] !== null && r[k] !== undefined) {
           r[k] = String(r[k]);
@@ -976,12 +997,16 @@ async function puxarDoSheets(){
         }
       });
 
-      const l=mapa.get(r._id); 
-      if(!l){ loc.unshift(r); add++; } 
-      else if(new Date(r._atualizado_em) > new Date(l._atualizado_em)){
+      const l = mapa.get(r._id); 
+      if (!l) {
+        loc.unshift(r);
+        add++;
+      } else if (new Date(r._atualizado_em) > new Date(l._atualizado_em)) {
         const statusLocalExportado = (l._exportado === true || l._exportado === 'true' || l._exportado === 'TRUE');
         Object.assign(l, r);
-        if (statusLocalExportado) l._exportado = true; 
+        if (statusLocalExportado) {
+           l._exportado = true; 
+        }
         atual++;
       }
     }); 
@@ -989,13 +1014,13 @@ async function puxarDoSheets(){
     setHistorico(loc);
     renderHistorico();
     mostrarToast(`Sincronizado! +${add} nova(s) e ${atual} atualizada(s).`);
-    localStorage.setItem(LAST_SYNC_KEY,new Date().toISOString()); 
-  }
-  catch(e){
+    
+    localStorage.setItem('apac_last_sync', new Date().toISOString()); 
+  } catch (e) {
+    console.warn('Puxar falhou:', e);
     mostrarToast('Erro ao sincronizar: ' + e.message, true);
   }
 }
-
 function atualizarStatusTopbar(){ const el=document.getElementById('statusSync'); if(el) el.textContent = 'Sincronização: ativa'; }
 
 let timerRasc=null;
@@ -1005,8 +1030,8 @@ let toastT=null;
 function mostrarToast(m,e=false){ const t=document.getElementById('toast');t.textContent=m;t.classList.toggle('error',e);t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3500); }
 
 const USUARIOS_SISTEMA = {
-  'digitador': 'apac2026',
-  'admin': 'admin123'
+  'digitador': 'admin',
+  'admin': 'admin'
 };
 
 function fazerLogin() {
