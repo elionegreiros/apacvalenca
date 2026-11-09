@@ -382,8 +382,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
         <div class="history-stats">
           <div class="stat"><span class="lbl">Total</span><span class="val" id="statTotal">0</span></div>
           <div class="stat"><span class="lbl">Pendentes</span><span class="val" id="statPendentes" style="color:var(--warning)">0</span></div>
-          <div class="stat"><span class="lbl">Exportados</span><span class="val" id="statExportados" style="color:var(--success)">0</span></div>
-          <div class="stat"><span class="lbl">Selecionados</span><span class="val" id="statSelecionados">0</span></div>
+                    <div class="stat"><span class="lbl">Exportados</span><span class="val" id="statExportados" style="color:var(--success)">0</span></div>
         </div>
         <div class="history-toolbar">
           <input type="search" id="searchInput" placeholder="Buscar por nome, CPF, procedimento...">
@@ -393,16 +392,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           <button class="btn btn-secondary btn-sm" onclick="limparFiltros()">Limpar</button>
           <button class="btn btn-google btn-sm" onclick="puxarDoSheets()">Atualizar da nuvem</button>
         </div>
-        <div class="history-actions-bar">
+                <div class="history-actions-bar">
           <button class="btn btn-secondary btn-sm" onclick="exportarHistoricoExcel()">Exportar Excel</button>
           <button class="btn btn-secondary btn-sm" onclick="exportarHistoricoJSON()">Exportar JSON</button>
           <button class="btn btn-secondary btn-sm" onclick="marcarSelecionadosExportados()">Marcar exportados</button>
-          <button class="btn btn-danger btn-sm" onclick="excluirSelecionados()">Excluir selecionados</button>
         </div>
         <div class="history-table-wrapper">
           <table class="history-table">
-            <thead><tr><th style="width:36px"><input type="checkbox" id="checkAll" onchange="toggleTodos(this)"></th><th>Data / Hora</th><th>Especialidade</th><th>Paciente</th><th>CPF</th><th>Status</th><th style="width:120px">Ações</th></tr></thead>
-            <tbody id="historyBody"><tr><td colspan="7" class="history-empty">Nenhuma APAC salva ainda.</td></tr></tbody>
+            <thead><tr><th>Data / Hora</th><th>Especialidade</th><th>Paciente</th><th>CPF</th><th>Status</th><th style="width:120px">Ações</th></tr></thead>
+            <tbody id="historyBody"><tr><td colspan="6" class="history-empty">Nenhuma APAC salva ainda.</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -785,9 +783,8 @@ function filtrarHistorico(){
 }
 function renderHistorico(){
   lerFiltros();const l=filtrarHistorico(),b=document.getElementById('historyBody');
-  if(!l.length){b.innerHTML=`<tr><td colspan="7" class="history-empty">${getHistorico().length===0?'Nenhuma APAC salva ainda.':'Nenhum resultado com os filtros atuais.'}</td></tr>`;atualizarSelecionados();return}
+    if(!l.length){b.innerHTML=`<tr><td colspan="6" class="history-empty">${getHistorico().length===0?'Nenhuma APAC salva ainda.':'Nenhum resultado com os filtros atuais.'}</td></tr>`;atualizarSelecionados();return}
   b.innerHTML=l.map(a=>`<tr data-id="${a._id}" onclick="abrirDetalhes('${a._id}')">
-    <td onclick="event.stopPropagation()"><input type="checkbox" class="row-check" data-id="${a._id}" onchange="atualizarSelecionados()"></td>
     <td style="color:var(--text-muted);font-size:12px">${formatarDataHora(a._criado_em)}</td>
     <td>${a.especialidade?`<span class="badge-esp ${classeEsp(a.especialidade)}">${a.especialidade}</span>`:'—'}</td>
     <td><strong>${a.nome_paciente||'—'}</strong></td>
@@ -797,17 +794,21 @@ function renderHistorico(){
       <div style="display:flex;gap:2px">
         <button class="icon-btn" title="Ver" onclick="abrirDetalhes('${a._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         <button class="icon-btn" title="Editar" onclick="carregarNoFormulario('${a._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-        <button class="icon-btn danger" title="Excluir" onclick="excluirDoHistorico('${a._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
       </div>
     </td></tr>`).join('');
   atualizarSelecionados();
 }
 function atualizarSelecionados(){
-  const c=document.querySelectorAll('.row-check:checked');
-  document.getElementById('statSelecionados').textContent=c.length;
-  document.querySelectorAll('.history-table tbody tr').forEach(tr=>{ const cb=tr.querySelector('.row-check');if(cb)tr.classList.toggle('selected',cb.checked); });
-}
-function toggleTodos(cb){document.querySelectorAll('.row-check').forEach(c=>{c.checked=cb.checked});atualizarSelecionados()}
+  const statEl = document.getElementById('statSelecionados');
+  if (statEl) statEl.textContent = 0; // Não faz nada se não achar o elemento, evitando erro
+  
+  // Mantém a função "Marcar exportados" funcionando se precisar
+  const selecionados = document.querySelectorAll('.row-check:checked');
+  document.querySelectorAll('.history-table tbody tr').forEach(tr=>{ 
+    const cb=tr.querySelector('.row-check');
+    if(cb) tr.classList.toggle('selected',cb.checked); 
+  });
+}function toggleTodos(cb){document.querySelectorAll('.row-check').forEach(c=>{c.checked=cb.checked});atualizarSelecionados()}
 function limparFiltros(){document.getElementById('searchInput').value='';document.getElementById('filterStatus').value='todos';document.getElementById('filterPeriodo').value='todos';document.getElementById('filterEspecialidade').value='todos';renderHistorico()}
 document.getElementById('searchInput')?.addEventListener('input',renderHistorico);
 document.getElementById('filterStatus')?.addEventListener('change',renderHistorico);
