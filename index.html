@@ -18,6 +18,93 @@
   --shadow-sm:0 1px 2px rgba(0,0,0,.05); --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
   --shadow-lg:0 20px 25px -5px rgba(0,0,0,.1); --radius-sm:4px; --radius:6px; --radius-lg:10px;
 }
+
+/* =========================================
+   MODO ESCURO SUAVE (Slate)
+   ========================================= */
+body.dark-mode {
+  --bg: #1e293b;
+  --surface: #334155;
+  --surface-alt: #475569;
+  --border: #64748b;
+  --border-strong: #94a3b8;
+  --text: #f1f5f9;
+  --text-muted: #cbd5e1;
+  --text-faint: #94a3b8;
+  --primary: #60a5fa;
+  --primary-hover: #93c5fd;
+  --primary-light: #1e3a8a;
+  --primary-border: #3b82f6;
+  --success-light: #064e3b;
+  --success: #34d399;
+  --warning-light: #78350f;
+  --warning: #fbbf24;
+  --danger-light: #7f1d1d;
+  --danger: #f87171;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow: 0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0,0,0,.5);
+}
+
+/* Ajustes finos para o modo escuro */
+body.dark-mode input, 
+body.dark-mode select, 
+body.dark-mode textarea {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+body.dark-mode .history-table tr:hover td {
+  background-color: #475569;
+}
+
+body.dark-mode .history-table td {
+  border-bottom-color: var(--border);
+}
+
+body.dark-mode .btn-secondary, 
+body.dark-mode .btn-ghost,
+body.dark-mode .btn-google {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.dark-mode .btn-secondary:hover {
+  background-color: var(--surface-alt);
+}
+body.dark-mode .history-table-wrapper {
+  background-color: var(--surface);
+  border-color: var(--border);
+}
+
+body.dark-mode .history-table td {
+  color: var(--text);
+}
+
+body.dark-mode .history-table td strong {
+  color: var(--text);
+}
+
+body.dark-mode .history-table tr:hover td {
+  background-color: var(--surface-alt) !important;
+}
+
+body.dark-mode .icon-btn {
+  color: var(--text-muted);
+}
+
+body.dark-mode .icon-btn:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+body.dark-mode .history-toolbar input, 
+body.dark-mode .history-toolbar select {
+  background-color: var(--surface-alt);
+  color: var(--text);
+  border-color: var(--border);
+}
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 .container{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
@@ -129,6 +216,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 @media(max-width:700px){.container{padding:16px 14px 40px}.topbar-inner{padding:12px 14px}.w-half,.w-third,.w-quarter,.w-1,.w-2,.w-3,.w-4,.w-5,.w-6{flex:1 1 100%}.procedimento-principal,.procedimento-secundario{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.esp-preview{grid-template-columns:1fr}.actions{padding:12px;gap:8px}.actions .btn{flex:1 1 auto;justify-content:center}.actions .spacer{display:none}.history-stats{gap:16px}.section-body{padding:16px}}
 @media print{body{background:#fff;font-size:11px}.container{margin:0;max-width:100%;padding:0}.actions,.tabs,.history-toolbar,.topbar,.banner-pendencias{display:none !important}.section{box-shadow:none;border:1px solid #999;page-break-inside:avoid}.section-head{background:#f5f5f5 !important}}
 .icon{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle}
+/* Animação do Spinner */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 5px;
+  vertical-align: middle;
+}
 </style>
 </head>
 <body>
@@ -184,11 +284,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
         Histórico <span class="badge" id="tabCount">0</span>
       </button>
-    </nav>
-    <button class="btn btn-danger btn-sm" onclick="limparCache()" title="Apaga todos os dados salvos neste navegador">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-      Limpar Cache
-    </button>
+        </nav>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary btn-sm" onclick="alternarTema()" id="btnTema" title="Alternar modo claro/escuro">
+        🌙 Modo Escuro
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="limparCache()" title="Apaga todos os dados salvos neste navegador">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Limpar Cache
+      </button>
+    </div>
   </div>
 
   <div class="view active" id="view-form">
@@ -216,9 +321,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
               <label>CPF <span class="req">*</span></label>
               <input type="text" id="f05" data-json="cpf_paciente" data-mask="cpf" maxlength="14" required placeholder="000.000.000-00">
             </div>
-            <!-- Data de Nascimento -->
+                        <!-- Data de Nascimento -->
             <div class="field w-3">
-              <label>Data Nasc. <span class="req">*</span></label>
+              <label style="display: flex; justify-content: space-between; align-items: center;">
+                Data Nasc. <span class="req">*</span>
+                <span id="idadeVisual" style="font-size: 11px; color: var(--primary); font-weight: bold; background: var(--primary-light); padding: 2px 6px; border-radius: 4px; display: none;"></span>
+              </label>
               <input type="date" id="f06" data-json="data_nascimento" required onchange="calcularIdadeResponsavel()">
             </div>
             <!-- Raça / Cor -->
@@ -352,20 +460,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
         </div>
       </div>
 
-      <div class="section">
+            <div class="section">
         <div class="section-head"><h2><span class="section-num">5</span>Justificativa (CID)</h2></div>
         <div class="section-body">
           <div class="row">
-            <div class="field w-3">
+            <div class="field w-full">
               <label>CID Principal <span class="req">*</span></label>
-              <input type="text" id="fCid" data-json="cid_principal" class="auto-upper" maxlength="4" required placeholder="Ex: I10">
+              <!-- Trocamos o input por um select que será preenchido via JS -->
+              <select id="fCid" data-json="cid_principal" required style="cursor: pointer;">
+                <option value="">— Selecione o Especialista primeiro —</option>
+              </select>
             </div>
           </div>
         </div>
       </div>
     </form>
     <div class="actions">
-      <button class="btn btn-primary" onclick="salvarNoHistorico()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> Salvar APAC</button>
+      <button class="btn btn-primary" id="btnSalvarApac" onclick="salvarNoHistorico()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> Salvar APAC</button>
       <button class="btn btn-secondary" onclick="novaApac()"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Nova</button>
       <button class="btn btn-secondary" onclick="salvarAPACemPDF()"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> PDF</button>
       <button class="btn btn-secondary" onclick="salvarAPACemExcel()"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13l8 6M16 13l-8 6"/></svg> Excel</button>
@@ -463,11 +574,48 @@ const REGRAS_PROCEDIMENTOS = {
   },
   'ortopedia_ienner': {
     nome: 'IENNER FELLIPE ARAUJO LIMA', especialidade: 'Ortopedia', cns: '708003312931924', cbo: '225270', cid_fixo: null,
-    proc_1: { cod: '0903010038', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
+    proc_1: { cod: '0903010011', nome: 'OCI AVALIACAO DIAGNOSTICA EM ORTOPEDIA', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
     proc_3_fixo: { cod: '0204020093', nome: 'RADIOGRAFIA DE COLUNA TORACICA (AP + LATERAL)', qtd: 1 }
   }
 };
+const CIDS_PERMITIDOS = {
+  'cardiologia_juliana': [
+    { cod: 'Z136', nome: 'Exame especial de rastreamento de doenças cardiovasculares' }
+  ],
+  'ortopedia_ienner': [
+    { cod: 'M150', nome: 'Artrose primária generalizada' },
+    { cod: 'M159', nome: 'Artrose não especificada' },
+    { cod: 'M171', nome: 'Gonartrose primária' },
+    { cod: 'M179', nome: 'Gonartrose não especificada' },
+    { cod: 'M190', nome: 'Artrose primária de outras articulações' },
+    { cod: 'M199', nome: 'Artrose não especificada' },
+    { cod: 'M650', nome: 'Abscesso da bainha sinovial' },
+    { cod: 'M653', nome: 'Dedo em gatilho' },
+    { cod: 'M750', nome: 'Capsulite adesiva do ombro' },
+    { cod: 'M751', nome: 'Síndrome do manguito rotador' },
+    { cod: 'M771', nome: 'Epicondilite lateral' },
+    { cod: 'M870', nome: 'Osteonecrose idiopática asséptica' },
+    { cod: 'M879', nome: 'Osteonecrose não especificada' },
+    { cod: 'M932', nome: 'Osteocondrite dissecante' }
+    // ... (Você pode adicionar mais CIDs da lista oficial aqui)
+  ],
+  'ginecologia_bianca': [
+    { cod: 'Z014', nome: 'Exame ginecológico de rotina' },
+    { cod: 'N800', nome: 'Endometriose do útero' },
+    { cod: 'N809', nome: 'Endometriose não especificada' },
+    { cod: 'D250', nome: 'Leiomioma submucoso do útero' },
+    { cod: 'D259', nome: 'Leiomioma do útero não especificado' },
+    { cod: 'N830', nome: 'Cisto ovariano folicular' },
+    { cod: 'N839', nome: 'Doença cística do ovário não especificada' },
+    { cod: 'N840', nome: 'Pólipo do corpo do útero' },
+    { cod: 'N939', nome: 'Sangramento vaginal anormal' },
+    { cod: 'N941', nome: 'Dispareunia' }
+    // ... (Você pode adicionar mais CIDs da lista oficial aqui)
+  ]
+};
+// A ginecologia_maria usa a mesma lista da bianca
+CIDS_PERMITIDOS['ginecologia_maria'] = CIDS_PERMITIDOS['ginecologia_bianca'];
 
 function gerarId(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
 function formatarData(v){if(!v||v.length!==8)return v||'';return v.slice(6,8)+'/'+v.slice(4,6)+'/'+v.slice(0,4)}
@@ -505,7 +653,7 @@ function onEspecialidadeChange(){
   const key = document.getElementById('fEspecialidade').value;
   const regra = REGRAS_PROCEDIMENTOS[key];
   const infoRow = document.getElementById('espInfoRow');
-  const inputCid = document.getElementById('fCid');
+  const selectCid = document.getElementById('fCid');
 
   document.getElementById('f18_codigo').value = '';
   document.getElementById('f18_nome').value = '';
@@ -519,15 +667,22 @@ function onEspecialidadeChange(){
   document.getElementById('row_escolha').style.display = 'none';
   document.getElementById('f_opcao_secundario').innerHTML = '<option value="">— Selecione —</option>';
 
-  // TRAVA E PREENCHE O CID SE FOR FIXO
-  if (regra && regra.cid_fixo) {
-    inputCid.value = regra.cid_fixo;
-    inputCid.readOnly = true;
-    inputCid.style.background = 'var(--surface-alt)';
-  } else {
-    inputCid.value = '';
-    inputCid.readOnly = false;
-    inputCid.style.background = '#fff';
+  // LIMPA E PREENCHE O COMBO DE CID
+  selectCid.innerHTML = '<option value="">— Selecione o CID —</option>';
+  
+  if (regra && CIDS_PERMITIDOS[key]) {
+    const listaCids = CIDS_PERMITIDOS[key];
+    listaCids.forEach(cid => {
+      const opt = document.createElement('option');
+      opt.value = cid.cod;
+      opt.textContent = `${cid.cod} - ${cid.nome}`;
+      selectCid.appendChild(opt);
+    });
+    
+    // Se a especialidade tiver um CID fixo (Cardiologia/Ginecologia), já deixa selecionado
+    if (regra.cid_fixo) {
+       selectCid.value = regra.cid_fixo;
+    }
   }
 
   if(!regra){ infoRow.style.display = 'none'; return; }
@@ -564,7 +719,6 @@ function onEspecialidadeChange(){
     document.getElementById('f_opcao_secundario_qtd').value = 1;
   }
 }
-
 function onOpcaoSecundarioChange() {
   const select = document.getElementById('f_opcao_secundario');
   const cod = select.value;
@@ -652,11 +806,11 @@ async function salvarNoHistorico(){
   const faltando=validarFormulario();
   if(faltando.length){mostrarToast(`Preencha: ${faltando.slice(0,3).join(', ')}${faltando.length>3?'...':''}`,true);return}
   
-  const btn = document.querySelector('button[onclick="salvarNoHistorico()"]');
+    const btn = document.getElementById('btnSalvarApac');
   if (btn.disabled) return;
   btn.disabled = true;
   const txtAntigo = btn.innerHTML;
-  btn.innerHTML = 'Salvando...';
+  btn.innerHTML = '<span class="spinner"></span> Salvando...';
 
   try {
     const dados=coletarDados(),h=getHistorico(),agora=new Date().toISOString();
@@ -692,6 +846,11 @@ async function salvarNoHistorico(){
 
 function novaApac(){
   document.getElementById('apacForm').reset();
+  
+  // Adicione esta linha para esconder a idade ao limpar o formulário:
+  const spanIdade = document.getElementById('idadeVisual');
+  if (spanIdade) spanIdade.style.display = 'none';
+
   document.getElementById('f17').value = '64300-000';
   document.getElementById('fcdlogr').value = '81';
   document.querySelector('input[name="f07"][value="M"]').checked=false;
@@ -711,7 +870,11 @@ function novaApac(){
 
   editandoId=null;window.scrollTo({top:0,behavior:'smooth'});
 }
-function limparFormulario(){if(confirm('Limpar formulário? (APACs salvas não serão apagadas)'))novaApac()}
+function limparFormulario(){
+  if(confirm('⚠️ Tem certeza que deseja limpar o formulário?\n\nOs dados digitados que ainda não foram salvos serão perdidos.')){
+    novaApac();
+  }
+}
 
 async function carregarNoFormulario(id){
   const ap=getHistorico().find(a=>a._id===id);if(!ap)return;
@@ -1088,8 +1251,13 @@ function calcularIdadeResponsavel() {
   const dataNascInput = document.getElementById('f06').value;
   const inputPaciente = document.getElementById('f03');
   const inputResponsavel = document.getElementById('f11');
+  const spanIdade = document.getElementById('idadeVisual');
   
-  if (!dataNascInput) return;
+  // Se não tem data, esconde o badge e para
+  if (!dataNascInput) {
+    if (spanIdade) spanIdade.style.display = 'none';
+    return;
+  }
 
   const dataNasc = new Date(dataNascInput);
   const hoje = new Date();
@@ -1102,6 +1270,13 @@ function calcularIdadeResponsavel() {
     idade--;
   }
 
+  // Atualiza o badge visual de idade ao lado do campo
+  if (spanIdade) {
+    spanIdade.style.display = 'inline-block';
+    spanIdade.textContent = idade + ' anos';
+  }
+
+  // Lógica do Responsável
   if (idade >= 18) {
     // MAIOR DE IDADE: Copia o nome do paciente e bloqueia
     if (inputPaciente.value.trim() !== "") {
@@ -1120,7 +1295,6 @@ function calcularIdadeResponsavel() {
     }
   }
 }
-
 // Sincroniza a regra se o Nome do Paciente for digitado DEPOIS da data de nascimento
 document.querySelectorAll('.auto-upper').forEach(el => {
   el.addEventListener('input', (e) => {
@@ -1133,6 +1307,33 @@ document.querySelectorAll('.auto-upper').forEach(el => {
     }
   });
 });
+// Lógica do Modo Escuro
+function alternarTema() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  
+  // Salva a preferência no navegador
+  localStorage.setItem('apac_tema_escuro', isDark ? 'sim' : 'nao');
+  
+  // Muda o texto do botão
+  atualizarBotaoTema(isDark);
+}
+
+function atualizarBotaoTema(isDark) {
+  const btn = document.getElementById('btnTema');
+  if (btn) {
+    btn.innerHTML = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+  }
+}
+
+// Verifica a preferência salva ao carregar a página
+const temaSalvo = localStorage.getItem('apac_tema_escuro');
+if (temaSalvo === 'sim') {
+  document.body.classList.add('dark-mode');
+  atualizarBotaoTema(true);
+} else if (temaSalvo === 'nao') {
+  atualizarBotaoTema(false);
+}
 (function init(){
   localStorage.setItem(AUTOSYNC_KEY, '1');
   atualizarStats();renderHistorico();atualizarStatusTopbar();
