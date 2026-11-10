@@ -379,9 +379,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           <div class="row">
             <div class="field w-full">
               <label>Selecione o profissional <span class="req">*</span></label>
-              <select id="fEspecialidade" class="big" required onchange="onEspecialidadeChange()">
+                            <select id="fEspecialidade" class="big" required onchange="onEspecialidadeChange()">
                 <option value="">— Selecione o especialista —</option>
-                <option value="cardiologia_juliana">Cardiologia · JULIANA ALVES DOS REIS SOBREIRA</option>
+                <option value="cardiologia_risco">Cardiologia · OCI Risco Cirúrgico</option>
+                <option value="cardiologia_avaliacao">Cardiologia · OCI Avaliação Cardiológica</option>
                 <option value="ginecologia_bianca">Ginecologia · BIANCA DIAS MATIAS</option>
                 <option value="ginecologia_maria">Ginecologia · MARIA CLARA FORTES PORTELA BOMFIM</option>
                 <option value="ortopedia_ienner">Ortopedia · IENNER FELLIPE ARAUJO LIMA</option>
@@ -552,11 +553,25 @@ const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
 
 const REGRAS_PROCEDIMENTOS = {
-  'cardiologia_juliana': {
+    'cardiologia_risco': {
     nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120', cid_fixo: 'Z136',
     proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
-    proc_2: { cod: '0211020036', nome: 'ELETROCARDIOGRAMA', qtd: 1 },
-    proc_3_fixo: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 }
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: null, // Vai usar o dropdown
+    opcoes_proc_3: [
+      { cod: '0211020036', nome: 'ELETROCARDIOGRAMA' },
+      { cod: '0204030153', nome: 'RADIOGRAFIA DE TORAX (PA E PERFIL)' }
+    ]
+  },
+  'cardiologia_avaliacao': {
+    nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120', cid_fixo: 'Z136',
+    proc_1: { cod: '0902010026', nome: 'OCI AVALIACAO CARDIOLOGICA', qtd: 1 },
+    proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
+    proc_3_fixo: null, // Vai usar o dropdown
+    opcoes_proc_3: [
+      { cod: '0211020036', nome: 'ELETROCARDIOGRAMA' },
+      { cod: '0205010032', nome: 'ECOCARDIOGRAFIA TRANSTORACICA' }
+    ]
   },
   'ginecologia_bianca': {
     nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250', cid_fixo: 'Z014',
@@ -586,7 +601,10 @@ const REGRAS_PROCEDIMENTOS = {
   }
 };
 const CIDS_PERMITIDOS = {
-  'cardiologia_juliana': [
+    'cardiologia_risco': [
+    { cod: 'Z136', nome: 'Exame especial de rastreamento de doenças cardiovasculares' }
+  ],
+  'cardiologia_avaliacao': [
     { cod: 'Z136', nome: 'Exame especial de rastreamento de doenças cardiovasculares' }
   ],
   'ortopedia_ienner': [
@@ -812,6 +830,17 @@ async function salvarNoHistorico(){
   const faltando=validarFormulario();
   if(faltando.length){mostrarToast(`Preencha: ${faltando.slice(0,3).join(', ')}${faltando.length>3?'...':''}`,true);return}
   
+  // --- TRAVA DE SEGURANÇA PARA EXAMES OBRIGATÓRIOS ---
+  const key = document.getElementById('fEspecialidade').value;
+  if (key === 'ortopedia_ienner' || key === 'cardiologia_risco' || key === 'cardiologia_avaliacao') {
+    const opcao = document.getElementById('f_opcao_secundario').value;
+    if (!opcao) {
+      mostrarToast('Selecione o exame no 3º Procedimento antes de salvar.', true);
+      return;
+    }
+  }
+  // ---------------------------------------------------
+
     const btn = document.getElementById('btnSalvarApac');
   if (btn.disabled) return;
   btn.disabled = true;
