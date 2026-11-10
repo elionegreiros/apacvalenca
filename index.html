@@ -540,7 +540,7 @@ const REGRAS_PROCEDIMENTOS = {
     ]
   },
       'ginecologia_bianca': {
-    nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250', cid_fixo: 'Z014',
+    nome: 'BIANCA DIAS MATIAS', especialidade: 'Ginecologia', cns: '707705628327110', cbo: '225250', cid_fixo: 'N70',
     proc_1: { cod: '0906010012', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 }, // Principal padrão (Transvaginal)
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
     proc_3_fixo: null,
@@ -551,7 +551,7 @@ const REGRAS_PROCEDIMENTOS = {
     default_proc_3: '0205020186' // Transvaginal é o padrão
   },
   'ginecologia_maria': {
-    nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220', cid_fixo: 'Z014',
+    nome: 'MARIA CLARA FORTES PORTELA BOMFIM', especialidade: 'Ginecologia', cns: '704805589639948', cbo: '225220', cid_fixo: 'N70',
     proc_1: { cod: '0906010012', nome: 'OCI - GIN1 - AVALIACAO DIAGNOSTICA INICIAL', qtd: 1 }, // Principal padrão (Transvaginal)
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
     proc_3_fixo: null,
@@ -617,16 +617,34 @@ const CIDS_PERMITIDOS = {
   'cardiologia_risco': [ { cod: 'Z136', nome: 'Exame especial de rastreamento de doenças cardiovasculares' } ],
   'cardiologia_avaliacao': [ { cod: 'Z136', nome: 'Exame especial de rastreamento de doenças cardiovasculares' } ],
   'ginecologia_bianca': [
-    { cod: 'Z014', nome: 'Exame ginecológico de rotina' },
-    { cod: 'N800', nome: 'Endometriose do útero' },
-    { cod: 'N809', nome: 'Endometriose não especificada' },
-    { cod: 'D250', nome: 'Leiomioma submucoso do útero' },
-    { cod: 'D259', nome: 'Leiomioma do útero não especificado' },
-    { cod: 'N830', nome: 'Cisto ovariano folicular' },
-    { cod: 'N839', nome: 'Doença cística do ovário não especificada' },
-    { cod: 'N840', nome: 'Pólipo do corpo do útero' },
-    { cod: 'N939', nome: 'Sangramento vaginal anormal' },
-    { cod: 'N941', nome: 'Dispareunia' }
+    { cod: 'N70', nome: 'Doenças inflamatórias dos órgãos pélvicos femininos' },
+    { cod: 'N71', nome: 'Doenças inflamatórias do útero' },
+    { cod: 'N72', nome: 'Doenças inflamatórias do colo do útero' },
+    { cod: 'N73', nome: 'Outras doenças inflamatórias pélvicas femininas' },
+    { cod: 'N74', nome: 'Transtornos inflamatórios da pelve feminina em doenças classificadas em outra parte' },
+    { cod: 'N75', nome: 'Doenças das glândulas de Bartholin' },
+    { cod: 'N76', nome: 'Outras afecções inflamatórias da vagina e da vulva' },
+    { cod: 'N77', nome: 'Ulceração e inflamação da vulva e vagina em doenças classificadas em outra parte' },
+    { cod: 'N80', nome: 'Endometriose' },
+    { cod: 'N81', nome: 'Prolapso genital feminino' },
+    { cod: 'N82', nome: 'Fístulas do trato genital feminino' },
+    { cod: 'N83', nome: 'Transtornos não inflamatórios do ovário, trompa de Falópio e ligamento largo' },
+    { cod: 'N84', nome: 'Pólipo do trato genital feminino' },
+    { cod: 'N85', nome: 'Outros transtornos não inflamatórios do útero, exceto colo' },
+    { cod: 'N86', nome: 'Erosão e ectrópio do colo do útero' },
+    { cod: 'N87', nome: 'Displasia do colo do útero' },
+    { cod: 'N88', nome: 'Outros transtornos não inflamatórios do colo do útero' },
+    { cod: 'N89', nome: 'Outros transtornos não inflamatórios da vagina' },
+    { cod: 'N90', nome: 'Outros transtornos não inflamatórios da vulva e do períneo' },
+    { cod: 'N91', nome: 'Menstruação ausente, escassa e rara' },
+    { cod: 'N92', nome: 'Menstruação excessiva, frequente e irregular' },
+    { cod: 'N93', nome: 'Outros sangramentos anormais do útero e da vagina' },
+    { cod: 'N94', nome: 'Dor e outras afecções associadas aos órgãos genitais femininos e ao ciclo menstrual' },
+    { cod: 'N95', nome: 'Transtornos da menopausa e outros transtornos do climatério' },
+    { cod: 'N96', nome: 'Aborto habitual' },
+    { cod: 'N97', nome: 'Infertilidade feminina' },
+    { cod: 'N98', nome: 'Complicações associadas à reprodução artificial' },
+    { cod: 'N99', nome: 'Transtornos do aparelho geniturinário pós-procedimentos' }
   ],
   'ortopedia_raio_x': [
     { cod: 'M150', nome: 'Artrose primária generalizada' }, { cod: 'M159', nome: 'Artrose não especificada' },
