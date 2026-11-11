@@ -2278,8 +2278,12 @@ async function sincronizarTodosComSheets(apacs) {
   atualizarStats();
   renderHistorico();
 
-  // Se já estava logado, mantém o setor e puxa a nuvem
+  // Se já estava logado, pula a tela de login e puxa a nuvem
   if (sessionStorage.getItem('apac_logado') === 'sim') {
+    
+    // AQUI ESTÁ A CORREÇÃO: Esconde a tela de login ao atualizar a página
+    document.getElementById('telaLogin').style.display = 'none';
+
     const setorSalvo = sessionStorage.getItem('apac_setor');
     if (setorSalvo) {
       selecionarSetor(setorSalvo, true);
