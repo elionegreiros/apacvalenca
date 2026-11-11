@@ -531,12 +531,219 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .btn-login{width:100%;background:#1e40af;color:white;border:none;padding:12px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer}
 .login-erro{color:#dc2626;font-size:13px;text-align:center;margin-top:15px;display:none;font-weight:500}
 
-.tela-setor{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:999998;display:none;align-items:center;justify-content:center;font-family:inherit}
-.setor-card{background:#fff;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.1);width:100%;max-width:600px;text-align:center;border:1px solid #cbd5e1}
-.setor-card h2{color:#1e293b;font-size:22px;margin-bottom:10px}
-.setor-card p{color:#64748b;font-size:14px;margin-bottom:30px}
-.setor-opcoes{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.setor-btn{padding:16px 24px;font-size:15px;flex:1;min-width:150px}
+/* =========================================
+   TELA DE SELEÇÃO DE SETOR (ESTILO PREMIUM)
+   ========================================= */
+.tela-setor {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #e0eafc 0%, #f4f7fb 50%, #d4e2fa 100%);
+  z-index: 999998;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  padding: 20px;
+}
+
+.setor-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 50px 60px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  width: 100%;
+  max-width: 1050px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efeito de ondas sutis no fundo do card */
+.setor-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -10%;
+  width: 50%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 60%);
+  transform: rotate(30deg);
+  pointer-events: none;
+}
+
+/* Cabeçalho do Card */
+.setor-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.setor-header-icon .line {
+  height: 2px;
+  width: 100px;
+  background: linear-gradient(90deg, transparent, #93c5fd, transparent);
+  border-radius: 2px;
+}
+.setor-header-icon svg {
+  width: 48px;
+  height: 48px;
+  color: #1d4ed8;
+  stroke-width: 2.5;
+}
+
+.setor-card h2 {
+  color: #0f172a;
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.setor-card p {
+  color: #475569;
+  font-size: 18px;
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+
+/* Container dos botões */
+.setor-opcoes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Botões estilo Card Interativo */
+.btn-setor {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-setor:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Ícone dentro do botão */
+.btn-setor-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+.btn-setor-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+}
+
+/* Texto e Seta */
+.btn-setor-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  flex: 1;
+  text-align: left;
+}
+.btn-setor-arrow {
+  width: 24px;
+  height: 24px;
+  opacity: 0.7;
+  transition: transform 0.3s ease;
+}
+.btn-setor:hover .btn-setor-arrow {
+  transform: translateX(5px);
+  opacity: 1;
+}
+
+/* =========================================
+   CORES ESPECÍFICAS PARA CADA SETOR
+   ========================================= */
+
+/* Cardiologia (Rosa) */
+.btn-setor.cardio {
+  border-color: #fbcfe8;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.05);
+}
+.btn-setor.cardio:hover {
+  border-color: #f472b6;
+  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.15);
+}
+.btn-setor.cardio .btn-setor-icon {
+  background: #fce7f3;
+  color: #db2777;
+}
+.btn-setor.cardio .btn-setor-arrow { color: #db2777; }
+
+/* Ginecologia (Roxo) */
+.btn-setor.gineco {
+  border-color: #e9d5ff;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.05);
+}
+.btn-setor.gineco:hover {
+  border-color: #c084fc;
+  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.15);
+}
+.btn-setor.gineco .btn-setor-icon {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+.btn-setor.gineco .btn-setor-arrow { color: #9333ea; }
+
+/* Ortopedia (Azul) */
+.btn-setor.orto {
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.05);
+}
+.btn-setor.orto:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+.btn-setor.orto .btn-setor-icon {
+  background: #dbeafe;
+  color: #2563eb;
+}
+.btn-setor.orto .btn-setor-arrow { color: #2563eb; }
+
+/* Responsividade para telas menores */
+@media (max-width: 850px) {
+  .setor-opcoes { grid-template-columns: 1fr; gap: 15px; }
+  .setor-card { padding: 30px 20px; }
+  .setor-card h2 { font-size: 28px; }
+  .setor-card p { font-size: 15px; margin-bottom: 25px; }
+  .setor-header-icon .line { width: 40px; }
+}
+
+/* Ajuste para o Modo Escuro */
+body.dark-mode .tela-setor {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+body.dark-mode .setor-card {
+  background: rgba(30, 41, 59, 0.85);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+body.dark-mode .setor-card h2 { color: #f8fafc; }
+body.dark-mode .setor-card p { color: #cbd5e1; }
+body.dark-mode .btn-setor { background: rgba(15, 23, 42, 0.6); }
+body.dark-mode .btn-setor:hover { background: rgba(15, 23, 42, 0.9); }
+body.dark-mode .btn-setor-text { color: #f8fafc; }
 .idade-badge{font-size:11px;color:var(--primary);font-weight:bold;background:var(--primary-light);padding:2px 6px;border-radius:4px}
 </style>
 </head>
@@ -564,12 +771,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 
 <div id="telaSetor" class="tela-setor">
   <div class="setor-card">
+    
+    <!-- Cabeçalho com Coração e Linhas -->
+    <div class="setor-header-icon">
+      <div class="line"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"/>
+        <path d="M12 9v4M12 13l2-2M12 13l-2-2" stroke="#3b82f6" stroke-width="2"/>
+      </svg>
+      <div class="line" style="background: linear-gradient(90deg, transparent, #93c5fd, transparent);"></div>
+    </div>
+
     <h2>Qual setor você vai digitar?</h2>
     <p>Escolha o setor para focar os atendimentos e evitar erros.</p>
+    
     <div class="setor-opcoes">
-      <button onclick="selecionarSetor('Cardiologia')" class="btn btn-primary setor-btn">🫀 Cardiologia</button>
-      <button onclick="selecionarSetor('Ginecologia')" class="btn btn-primary setor-btn">🚺 Ginecologia</button>
-      <button onclick="selecionarSetor('Ortopedia')" class="btn btn-primary setor-btn">🦴 Ortopedia</button>
+      <!-- Botão Cardiologia -->
+      <button onclick="selecionarSetor('Cardiologia')" class="btn-setor cardio">
+        <div class="btn-setor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"/>
+            <path d="M12 9v4M12 13l2-2M12 13l-2-2" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="btn-setor-text">Cardiologia</span>
+        <svg class="btn-setor-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+
+      <!-- Botão Ginecologia -->
+      <button onclick="selecionarSetor('Ginecologia')" class="btn-setor gineco">
+        <div class="btn-setor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="9" r="6"/>
+            <path d="M12 15v6M9 18h6"/>
+          </svg>
+        </div>
+        <span class="btn-setor-text">Ginecologia</span>
+        <svg class="btn-setor-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+
+      <!-- Botão Ortopedia -->
+      <button onclick="selecionarSetor('Ortopedia')" class="btn-setor orto">
+        <div class="btn-setor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 4l6 6-3 3-2-2-2 2-2-2-3 3-6-6 3-3 2 2 2-2 2 2 3-3z"/>
+          </svg>
+        </div>
+        <span class="btn-setor-text">Ortopedia</span>
+        <svg class="btn-setor-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
