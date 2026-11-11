@@ -18,26 +18,392 @@
   --shadow-sm:0 1px 2px rgba(0,0,0,.05); --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
   --shadow-lg:0 20px 25px -5px rgba(0,0,0,.1); --radius-sm:4px; --radius:6px; --radius-lg:10px;
 }
+/* =========================================
+   MODO ESCURO PROFISSIONAL (High Contrast)
+   ========================================= */
 body.dark-mode {
-  --bg: #1e293b; --surface: #334155; --surface-alt: #475569; --border: #64748b; --border-strong: #94a3b8;
-  --text: #f1f5f9; --text-muted: #cbd5e1; --text-faint: #94a3b8; --primary: #60a5fa; --primary-hover: #93c5fd;
-  --primary-light: #1e3a8a; --primary-border: #3b82f6; --success-light: #064e3b; --success: #34d399;
-  --warning-light: #78350f; --warning: #fbbf24; --danger-light: #7f1d1d; --danger: #f87171;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.3); --shadow: 0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3); --shadow-lg: 0 20px 25px -5px rgba(0,0,0,.5);
+  --bg: #0f172a;              /* Fundo geral bem escuro (Slate 900) */
+  --surface: #1e293b;         /* Painéis e cards (Slate 800) */
+  --surface-alt: #334155;     /* Fundo de inputs e linhas (Slate 700) */
+  --border: #334155;          /* Bordas base */
+  --border-strong: #475569;   /* Bordas em hover/foco */
+  
+  --text: #f8fafc;            /* Texto principal quase branco */
+  --text-muted: #94a3b8;      /* Texto secundário */
+  --text-faint: #64748b;      /* Placeholders e hints */
+  
+  --primary: #3b82f6;         /* Azul vibrante */
+  --primary-hover: #2563eb;
+  --primary-light: rgba(59, 130, 246, 0.15);
+  --primary-border: #1d4ed8;
+  
+  --success: #10b981;         
+  --success-light: rgba(16, 185, 129, 0.15);
+  --warning: #f59e0b;
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --danger: #ef4444;
+  --danger-light: rgba(239, 68, 68, 0.15);
+  --danger-border: #b91c1c;
+  
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.6);
 }
-body.dark-mode input, body.dark-mode select, body.dark-mode textarea { background-color: var(--surface-alt); color: var(--text); }
-body.dark-mode .history-table tr:hover td { background-color: #475569; }
-body.dark-mode .history-table td { border-bottom-color: var(--border); }
-body.dark-mode .btn-secondary, body.dark-mode .btn-ghost, body.dark-mode .btn-google { background-color: var(--surface); color: var(--text); border-color: var(--border); }
-body.dark-mode .btn-secondary:hover { background-color: var(--surface-alt); }
-body.dark-mode .history-table-wrapper { background-color: var(--surface); border-color: var(--border); }
-body.dark-mode .history-table td { color: var(--text); }
-body.dark-mode .history-table td strong { color: var(--text); }
-body.dark-mode .history-table tr:hover td { background-color: var(--surface-alt) !important; }
-body.dark-mode .icon-btn { color: var(--text-muted); }
-body.dark-mode .icon-btn:hover { background-color: var(--surface-alt); color: var(--text); }
-body.dark-mode .history-toolbar input, body.dark-mode .history-toolbar select { background-color: var(--surface-alt); color: var(--text); border-color: var(--border); }
 
+/* Inputs mais escuros para "afundar" no painel */
+body.dark-mode input, 
+body.dark-mode select, 
+body.dark-mode textarea {
+  background-color: #0f172a !important;
+  color: var(--text) !important;
+  border-color: var(--border-strong) !important;
+}
+body.dark-mode input:focus, 
+body.dark-mode select:focus, 
+body.dark-mode textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* Botões Secundários e Fantasmas */
+body.dark-mode .btn-secondary,
+body.dark-mode .btn-ghost,
+body.dark-mode .btn-google {
+  background-color: var(--surface-alt);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+body.dark-mode .btn-secondary:hover {
+  background-color: #475569;
+}
+body.dark-mode .btn-ghost:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* Tabela de Histórico */
+body.dark-mode .history-table-wrapper {
+  background-color: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .history-table th {
+  background-color: #0f172a;
+  color: var(--text-muted);
+  border-bottom-color: var(--border-strong);
+}
+body.dark-mode .history-table td {
+  color: var(--text);
+  border-bottom-color: var(--border);
+}
+body.dark-mode .history-table td strong {
+  color: var(--text);
+}
+body.dark-mode .history-table tr:hover td {
+  background-color: var(--surface-alt) !important;
+}
+
+/* Ícones de ação */
+body.dark-mode .icon-btn {
+  color: var(--text-muted);
+}
+body.dark-mode .icon-btn:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+/* Toolbar de histórico */
+body.dark-mode .history-toolbar input, 
+body.dark-mode .history-toolbar select {
+  background-color: #0f172a;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+/* Painéis auxiliares (Unidade, preview de especialista, estatísticas) */
+body.dark-mode .unidade-box,
+body.dark-mode .esp-preview,
+body.dark-mode .history-stats,
+body.dark-mode .history-actions-bar {
+  background-color: #0f172a;
+  border-color: var(--border);
+}
+
+/* Modal */
+body.dark-mode .modal-overlay {
+  background: rgba(0, 0, 0, 0.75);
+}
+body.dark-mode .modal {
+  background-color: var(--surface);
+  border-color: var(--border-strong);
+}
+body.dark-mode .modal-header, 
+body.dark-mode .modal-footer {
+  background-color: #0f172a;
+  border-color: var(--border);
+}
+
+/* Tags coloridas com fundo translúcido (mais sofisticadas) */
+body.dark-mode .badge-esp.cardio { 
+  background: rgba(239, 68, 68, 0.2); 
+  color: #fca5a5; 
+  border-color: #991b1b; 
+}
+body.dark-mode .badge-esp.gineco { 
+  background: rgba(236, 72, 153, 0.2); 
+  color: #fbcfe8; 
+  border-color: #9d174d; 
+}
+body.dark-mode .badge-esp.orto { 
+  background: rgba(99, 102, 241, 0.2); 
+  color: #c7d2fe; 
+  border-color: #4338ca; 
+}
+/* =========================================
+   AJUSTES DO MODO ESCURO NA TELA DE LOGIN E SETOR
+   ========================================= */
+
+/* TELA DE LOGIN */
+body.dark-mode .tela-login {
+  background-color: var(--bg);
+}
+
+body.dark-mode .login-card {
+  background-color: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+body.dark-mode .login-header h2 {
+  color: var(--text);
+}
+
+body.dark-mode .login-header p {
+  color: var(--text-muted);
+}
+
+body.dark-mode .login-field label {
+  color: var(--text-muted);
+}
+
+body.dark-mode .login-field input {
+  background-color: #0f172a;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+body.dark-mode .login-field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+body.dark-mode .login-field input::placeholder {
+  color: var(--text-faint);
+}
+
+body.dark-mode .btn-login {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+body.dark-mode .btn-login:hover {
+  background-color: var(--primary-hover);
+}
+
+body.dark-mode .login-erro {
+  color: var(--danger);
+  background-color: var(--danger-light);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--danger-border);
+}
+
+/* TELA DE SELEÇÃO DE SETOR */
+body.dark-mode .tela-setor {
+  background-color: var(--bg);
+}
+
+body.dark-mode .setor-card {
+  background-color: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+body.dark-mode .setor-card h2 {
+  color: var(--text);
+}
+
+body.dark-mode .setor-card p {
+  color: var(--text-muted);
+}
+/* =========================================
+   BOTÕES DE ÍCONES SOFISTICADOS (ESTILO NEON/CIRCULAR)
+   ========================================= */
+
+/* Estilo base do botão de ícone */
+.btn-icon-neon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  text-decoration: none;
+  padding: 0;
+}
+
+/* Tamanho do SVG dentro do botão */
+.btn-icon-neon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+/* Efeito de brilho ao passar o mouse */
+.btn-icon-neon:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--glow-color);
+  background: var(--hover-bg);
+}
+
+/* =========================================
+   VARIAÇÕES DE CORES E BRILHOS
+   ========================================= */
+
+/* Salvar (Verde) */
+.btn-neon-success {
+  border-color: #10b981;
+  color: #10b981;
+  --glow-color: rgba(16, 185, 129, 0.4);
+  --hover-bg: rgba(16, 185, 129, 0.1);
+}
+.btn-neon-success:hover { color: #34d399; border-color: #34d399; }
+
+/* Nova (Azul) */
+.btn-neon-primary {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  --glow-color: rgba(59, 130, 246, 0.4);
+  --hover-bg: rgba(59, 130, 246, 0.1);
+}
+.btn-neon-primary:hover { color: #60a5fa; border-color: #60a5fa; }
+
+/* PDF (Vermelho) */
+.btn-neon-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+  --glow-color: rgba(239, 68, 68, 0.4);
+  --hover-bg: rgba(239, 68, 68, 0.1);
+}
+.btn-neon-danger:hover { color: #f87171; border-color: #f87171; }
+
+/* Excel (Amarelo/Laranja) */
+.btn-neon-warning {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  --glow-color: rgba(245, 158, 11, 0.4);
+  --hover-bg: rgba(245, 158, 11, 0.1);
+}
+.btn-neon-warning:hover { color: #fbbf24; border-color: #fbbf24; }
+
+/* Imprimir (Cinza/Roxo) */
+.btn-neon-secondary {
+  border-color: #94a3b8;
+  color: #94a3b8;
+  --glow-color: rgba(148, 163, 184, 0.3);
+  --hover-bg: rgba(148, 163, 184, 0.1);
+}
+.btn-neon-secondary:hover { color: #cbd5e1; border-color: #cbd5e1; }
+
+/* Limpar (Rosa/Magenta) */
+.btn-neon-clean {
+  border-color: #ec4899;
+  color: #ec4899;
+  --glow-color: rgba(236, 72, 153, 0.4);
+  --hover-bg: rgba(236, 72, 153, 0.1);
+}
+.btn-neon-clean:hover { color: #f472b6; border-color: #f472b6; }
+
+/* Modo Escuro para os botões da tabela */
+body.dark-mode .btn-icon-neon {
+  background-color: #1e293b; /* Fundo escuro igual ao painel */
+}
+body.dark-mode .btn-icon-neon:hover {
+  background-color: #0f172a;
+}
+
+/* Ajustes nos botões pequenos da tabela (Ver e Editar) */
+.icon-btn.btn-icon-neon {
+  width: 32px;
+  height: 32px;
+}
+.icon-btn.btn-icon-neon svg {
+  width: 16px;
+  height: 16px;
+}
+/* =========================================
+   BOTÕES DO TOPO (TROCAR SETOR E SAIR)
+   ========================================= */
+.btn-top-neon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0;
+  margin-left: 8px;
+}
+
+.btn-top-neon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.btn-top-neon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--glow-color);
+  background: var(--hover-bg);
+}
+
+/* Trocar Setor (Azul) */
+.btn-top-primary {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  --glow-color: rgba(59, 130, 246, 0.4);
+  --hover-bg: rgba(59, 130, 246, 0.1);
+}
+.btn-top-primary:hover { color: #60a5fa; border-color: #60a5fa; }
+
+/* Sair (Vermelho) */
+.btn-top-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+  --glow-color: rgba(239, 68, 68, 0.4);
+  --hover-bg: rgba(239, 68, 68, 0.1);
+}
+.btn-top-danger:hover { color: #f87171; border-color: #f87171; }
+
+/* Ajuste para o Dark Mode no Topo */
+body.dark-mode .btn-top-neon {
+  background-color: #1e293b;
+}
+body.dark-mode .btn-top-neon:hover {
+  background-color: #0f172a;
+}
 html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 .container{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
@@ -217,10 +583,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
         <p>Laudo para solicitação e autorização de procedimento ambulatorial</p>
       </div>
     </div>
-    <div class="topbar-status">
+        <div class="topbar-status">
       <div class="status-item"><span class="status-dot"></span><span id="statusConexao">Sistema operacional</span></div>
       <div class="status-item"><span class="status-dot"></span><span id="statusSync">Sincronização: ativa</span></div>
-      <button class="btn btn-secondary btn-sm" id="btnTrocarSetor" onclick="trocarSetor()" style="display:none; margin-left: 10px;">🔄 Trocar Setor</button>
+      
+      <button class="btn-top-neon btn-top-primary" id="btnTrocarSetor" onclick="trocarSetor()" style="display:none;" title="Trocar Setor">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M17 1l4 4-4 4"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <path d="M7 23l-4-4 4-4"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+      </button>
+
+      <button class="btn-top-neon btn-top-danger" id="btnSair" onclick="fazerLogout()" style="display:none;" title="Sair do Sistema">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
@@ -294,10 +676,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
           </div>
 
           <div class="row">
-            <div class="field w-3"><label>CEP <span class="req">*</span></label><input type="text" id="f17" data-json="cep" data-mask="cep" maxlength="9" value="64300-000" required></div>
-            <div class="field w-2"><label>Cód. Logradouro</label><input type="text" id="fcdlogr" data-json="cod_logradouro" maxlength="3" value="81"></div>
-            <div class="field w-full"><label>Endereço (Rua / Av.) <span class="req">*</span></label><input type="text" id="f13" data-json="endereco" class="auto-upper" maxlength="30" required></div>
-          </div>
+  <div class="field w-3">
+    <label>CEP <span class="req">*</span></label>
+    <input type="text" id="f17" data-json="cep" data-mask="cep" maxlength="9" value="64300-000" required>
+  </div>
+  <div class="field w-3">
+    <label>Cód. Logradouro</label>
+    <select id="fcdlogr" data-json="cod_logradouro">
+      <option value="081">081 · Rua</option>
+      <option value="092">092 · Sítio</option>
+      <option value="713">713 · Comunidade</option>
+      <option value="008">008 · Avenida</option>
+    </select>
+  </div>
+  <div class="field w-full">
+    <label>Endereço (Rua / Av.) <span class="req">*</span></label>
+    <input type="text" id="f13" data-json="endereco" class="auto-upper" maxlength="30" required>
+  </div>
+</div>
 
           <div class="row">
             <div class="field w-3"><label>Número <span class="req">*</span></label><input type="text" id="fnum" data-json="numero" maxlength="10" required></div>
@@ -1007,7 +1403,7 @@ function novaApac(){
   if (spanIdade) spanIdade.style.display = 'none';
 
   document.getElementById('f17').value = '64300-000';
-  document.getElementById('fcdlogr').value = '81';
+  document.getElementById('fcdlogr').value = '081';
   document.querySelector('input[name="f07"][value="M"]').checked=false;
   document.getElementById('fEspecialidade').value='';
   document.getElementById('espInfoRow').style.display='none';
@@ -1126,10 +1522,14 @@ function renderHistorico(){
     <td><strong>${a.nome_paciente||'—'}</strong></td>
     <td style="color:var(--text-muted)">${formatarCPF(a.cpf_paciente)||'—'}</td>
     <td><span class="status ${a._exportado?'status-exportado':'status-pendente'}">${a._exportado?'Exportado':'Pendente'}</span></td>
-    <td onclick="event.stopPropagation()">
-      <div style="display:flex;gap:2px">
-        <button class="icon-btn" title="Ver" onclick="abrirDetalhes('${a._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button class="icon-btn" title="Editar" onclick="carregarNoFormulario('${a._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <td onclick="event.stopPropagation()">
+      <div style="display:flex;gap:8px">
+        <button class="icon-btn btn-icon-neon btn-neon-primary" title="Ver" onclick="abrirDetalhes('${a._id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="icon-btn btn-icon-neon btn-neon-warning" title="Editar" onclick="carregarNoFormulario('${a._id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
       </div>
     </td></tr>`).join('');
   atualizarSelecionados();
@@ -1276,25 +1676,24 @@ async function puxarDoSheets() {
         document.body.removeChild(script);
         resolve(response);
       };
-
       script.src = url + '?acao=listar&callback=' + callbackName;
       script.onerror = () => {
         delete window[callbackName];
         document.body.removeChild(script);
         reject(new Error('Falha ao carregar os dados da nuvem.'));
       };
-
       document.body.appendChild(script);
     });
 
     if (!data.ok) throw new Error(data.error || 'Resposta inválida');
 
     const rem = data.apacs || [];
-    const loc = getHistorico();
+    const loc = getHistorico(); // Aqui vai estar vazio (limpamos no init)
     const mapa = new Map(loc.map(a => [a._id, a]));
     let add = 0, atual = 0;
 
     rem.forEach(r => {
+      // Sanitiza tudo (evita erro de dados nulos)
       Object.keys(r).forEach(k => {
         if (r[k] !== null && r[k] !== undefined) {
           r[k] = String(r[k]);
@@ -1305,29 +1704,22 @@ async function puxarDoSheets() {
 
       const l = mapa.get(r._id);
       if (!l) {
+        // Como limpamos o cache, TUDO será tratado como novo
         loc.unshift(r);
         add++;
-      } else if (new Date(r._atualizado_em) > new Date(l._atualizado_em)) {
-        const statusLocalExportado = (l._exportado === true || l._exportado === 'true' || l._exportado === 'TRUE');
-        Object.assign(l, r);
-        if (statusLocalExportado) {
-           l._exportado = true;
-        }
-        atual++;
       }
     });
 
     setHistorico(loc);
     renderHistorico();
-    mostrarToast(`Sincronizado! +${add} nova(s) e ${atual} atualizada(s).`);
-
+    mostrarToast(`Sincronizado! ${add} ficha(s) carregada(s) da nuvem.`);
     localStorage.setItem(LAST_SYNC_KEY, new Date().toISOString());
+
   } catch (e) {
     console.warn('Puxar falhou:', e);
     mostrarToast('Erro ao sincronizar: ' + e.message, true);
   }
 }
-
 /* =========================================================
    RASCUNHO AUTOMÁTICO + TOAST
    ========================================================= */
@@ -1351,20 +1743,31 @@ function fazerLogin() {
   const erro = document.getElementById('loginErro');
 
   if (USUARIOS_SISTEMA[user] && USUARIOS_SISTEMA[user] === pass) {
+    // 1. LIMPEZA DE CACHE
+    localStorage.removeItem(HIST_KEY);
+    localStorage.removeItem(RASC_KEY);
+    localStorage.removeItem(LAST_SYNC_KEY);
+    sessionStorage.removeItem('apac_setor');
+
     document.getElementById('telaLogin').style.display = 'none';
     document.getElementById('telaSetor').style.display = 'flex';
+    document.getElementById('btnTrocarSetor').style.display = 'none';
+    document.getElementById('btnSair').style.display = 'none';
+
     sessionStorage.setItem('apac_logado', 'sim');
     erro.style.display = 'none';
+
+    novaApac();
+    atualizarStats();
+    renderHistorico();
+    
+    // 2. PUXA A NUVEM (com um pequeno delay para garantir que a tela carregou)
+    setTimeout(() => { puxarDoSheets(); }, 1000);
   } else {
     erro.style.display = 'block';
     document.getElementById('loginPass').value = '';
   }
 }
-
-if (sessionStorage.getItem('apac_logado') === 'sim') {
-  document.getElementById('telaLogin').style.display = 'none';
-}
-
 /* =========================================================
    SETOR
    ========================================================= */
@@ -1373,6 +1776,7 @@ function selecionarSetor(setor, isInit = false) {
 
   document.getElementById('telaSetor').style.display = 'none';
   document.getElementById('btnTrocarSetor').style.display = 'inline-block';
+  document.getElementById('btnSair').style.display = 'inline-block';
 
   const selectEsp = document.getElementById('fEspecialidade');
   if (!selectEsp) return;
@@ -1415,24 +1819,49 @@ function trocarSetor() {
   document.getElementById('telaSetor').style.display = 'flex';
   document.getElementById('btnTrocarSetor').style.display = 'none';
 }
+function fazerLogout() {
+  if (confirm('Deseja realmente sair do sistema?\n\nO rascunho atual será perdido e o cache será limpo.')) {
+    // LIMPEZA DE CACHE AO SAIR
+    localStorage.removeItem(HIST_KEY);
+    localStorage.removeItem(RASC_KEY);
+    localStorage.removeItem(LAST_SYNC_KEY);
+    sessionStorage.removeItem('apac_logado');
+    sessionStorage.removeItem('apac_setor');
+    
+    document.getElementById('btnTrocarSetor').style.display = 'none';
+    document.getElementById('btnSair').style.display = 'none';
 
+    document.getElementById('telaLogin').style.display = 'flex';
+    document.getElementById('telaSetor').style.display = 'none';
+    
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginErro').style.display = 'none';
+
+    novaApac();
+    atualizarStats();
+    renderHistorico();
+  }
+}
 /* =========================================================
    LIMPAR CACHE
    ========================================================= */
 function limparCache() {
-  if (confirm("⚠️ ATENÇÃO!\n\nIsso vai apagar TODAS as APACs salvas no seu navegador (histórico local) e os rascunhos.\n\nOs dados que já foram enviados para o Google Sheets NÃO serão apagados.\n\nDeseja continuar?")) {
+  if (confirm("⚠️ ATENÇÃO!\n\nIsso vai apagar TODAS as APACs salvas no seu navegador (histórico local) e os rascunhos.\n\nO usuário NÃO será deslogado.\n\nOs dados que já foram enviados para o Google Sheets NÃO serão apagados.\n\nDeseja continuar?")) {
+    // Remove os dados
     localStorage.removeItem(HIST_KEY);
     localStorage.removeItem(RASC_KEY);
     localStorage.removeItem(LAST_SYNC_KEY);
 
+    // Atualiza a interface
     atualizarStats();
     renderHistorico();
     novaApac();
 
+    // Mostra o aviso de sucesso
     mostrarToast('Cache limpo com sucesso!');
   }
 }
-
 /* =========================================================
    IDADE / RESPONSÁVEL
    ========================================================= */
@@ -1583,40 +2012,32 @@ async function sincronizarTodosComSheets(apacs) {
    INIT
    ========================================================= */
 (function init(){
-  atualizarStats();renderHistorico();
+  // ========================================================
+  // AO ATUALIZAR A PÁGINA (F5): LIMPEZA DE CACHE E NUVEM
+  // ========================================================
+  localStorage.removeItem(HIST_KEY);
+  localStorage.removeItem(RASC_KEY);
+  localStorage.removeItem(LAST_SYNC_KEY);
 
+  atualizarStats();
+  renderHistorico();
+
+  // Se já estava logado, mantém o setor e puxa a nuvem
   if (sessionStorage.getItem('apac_logado') === 'sim') {
     const setorSalvo = sessionStorage.getItem('apac_setor');
     if (setorSalvo) {
       selecionarSetor(setorSalvo, true);
+      
+      // Aguarda 1.5s para a página carregar e puxa os dados da nuvem
+      setTimeout(() => { 
+        console.log("🔄 Atualizando dados da nuvem após F5...");
+        puxarDoSheets(); 
+      }, 1500); 
+      
     } else {
+      // Logado mas sem setor escolhido: mostra a tela de setores
       document.getElementById('telaSetor').style.display = 'flex';
     }
-  }
-
-  if(localStorage.getItem(RASC_KEY)){
-    setTimeout(()=>{
-      if(confirm('Existe um rascunho não salvo. Deseja recuperá-lo?')){
-        const d=JSON.parse(localStorage.getItem(RASC_KEY));
-        document.querySelectorAll('[data-json]').forEach(el=>{ const k=el.dataset.json; if(d[k]!==undefined){let v=d[k];if(el.type==='date'&&v&&v.length===8)v=v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8);el.value=v} });
-        if(d.especialidade_key){
-          document.getElementById('fEspecialidade').value=d.especialidade_key;
-          onEspecialidadeChange();
-          document.getElementById('f18_codigo').value = d.proc_1_codigo || '';
-          document.getElementById('f18_qtd').value = d.proc_1_qtd || 0;
-          document.getElementById('f21').value = d.proc_2_codigo || '';
-          document.getElementById('f21_qtd').value = d.proc_2_qtd || 0;
-          document.getElementById('f24').value = d.proc_3_codigo || '';
-          document.getElementById('f24_qtd').value = d.proc_3_qtd || 0;
-          if(d.proc_4_codigo) {
-            document.getElementById('row_escolha').style.display = 'grid';
-            document.getElementById('f_opcao_secundario').value = d.proc_4_codigo;
-            onOpcaoSecundarioChange();
-            document.getElementById('f_opcao_secundario_qtd').value = d.proc_4_qtd || 1;
-          }
-        }
-      }
-    },300);
   }
 })();
 </script>
