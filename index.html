@@ -1134,7 +1134,16 @@ body.dark-mode .btn-setor-text { color: #f8fafc; }
         </div>
         <div class="history-table-wrapper">
           <table class="history-table">
-            <thead><tr><th>Data / Hora</th><th>Especialidade</th><th>Paciente</th><th>CPF</th><th>Status</th><th style="width:120px">Ações</th></tr></thead>
+            <thead>
+  <tr>
+    <th data-sort="_criado_em" style="cursor:pointer;" onclick="ordenarTabela('_criado_em')" title="Ordenar por Data">Data / Hora ↕</th>
+    <th data-sort="especialidade" style="cursor:pointer;" onclick="ordenarTabela('especialidade')" title="Ordenar por Especialidade">Especialidade ↕</th>
+    <th data-sort="nome_paciente" style="cursor:pointer;" onclick="ordenarTabela('nome_paciente')" title="Ordenar por Nome">Paciente ↕</th>
+    <th data-sort="cpf_paciente" style="cursor:pointer;" onclick="ordenarTabela('cpf_paciente')" title="Ordenar por CPF">CPF ↕</th>
+    <th data-sort="_exportado" style="cursor:pointer;" onclick="ordenarTabela('_exportado')" title="Ordenar por Status">Status ↕</th>
+    <th style="width:120px">Ações</th>
+  </tr>
+</thead>
             <tbody id="historyBody"><tr><td colspan="6" class="history-empty">Nenhuma APAC salva ainda.</td></tr></tbody>
           </table>
         </div>
@@ -1745,6 +1754,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>most
 /* =========================================================
    FILTROS + HISTÓRICO
    ========================================================= */
+let ordemAtual = { coluna: '_criado_em', direcao: 'desc' }; // Padrão: Data mais recente
 let filtroAtual={busca:'',status:'todos',periodo:'todos',especialidade:'todos'};
 
 function lerFiltros(){
@@ -1755,30 +1765,93 @@ function lerFiltros(){
 }
 
 function filtrarHistorico(){
-  lerFiltros();let l=getHistorico();
-  if(filtroAtual.busca){const b=filtroAtual.busca; l=l.filter(a=>String(a.nome_paciente||'').toLowerCase().includes(b)||String(a.cpf_paciente||'').includes(b.replace(/\D/g,''))||String(a.procedimento_principal||'').includes(b))}
-  if(filtroAtual.status==='pendente')l=l.filter(a=>!a._exportado);
-  if(filtroAtual.status==='exportado')l=l.filter(a=>a._exportado);
-  if(filtroAtual.especialidade!=='todos')l=l.filter(a=>a.especialidade===filtroAtual.especialidade);
+  lerFiltros();
+  let l = getHistorico();
+
+  if (filtroAtual.busca) {
+    const b = filtroAtual.busca.toLowerCase();
+    const bLimpa = b.replace(/\D/g, '');
+
+    l = l.filter(a => {
+      const matchNome = String(a.nome_paciente || '').toLowerCase().includes(b);
+      const cpfLimpo = String(a.cpf_paciente || '').replace(/\D/g, '');
+      const matchCpf = bLimpa.length > 0 && cpfLimpo.includes(bLimpa);
+      
+      let matchProc = false;
+      for(let i=1; i<=5; i++) {
+        if(String(a[`proc_${i}_codigo`] || '').includes(b)) matchProc = true;
+      }
+
+      return matchNome || matchCpf || matchProc;
+    });
+  }
+
+  if(filtroAtual.status==='pendente') l=l.filter(a=>!a._exportado);
+  if(filtroAtual.status==='exportado') l=l.filter(a=>a._exportado);
+  if(filtroAtual.especialidade!=='todos') l=l.filter(a=>a.especialidade===filtroAtual.especialidade);
+  
   if(filtroAtual.periodo!=='todos'){
     const ag=new Date(),lim=new Date();
     if(filtroAtual.periodo==='hoje')lim.setHours(0,0,0,0); else if(filtroAtual.periodo==='7d')lim.setDate(ag.getDate()-7);
     else if(filtroAtual.periodo==='30d')lim.setDate(ag.getDate()-30); else if(filtroAtual.periodo==='mes')lim.setDate(1);
     l=l.filter(a=>a._criado_em&&new Date(a._criado_em)>=lim);
   }
+
+  if (ordemAtual.coluna) {
+    l.sort((a, b) => {
+      let valA = a[ordemAtual.coluna] || '';
+      let valB = b[ordemAtual.coluna] || '';
+
+      if (ordemAtual.coluna === '_exportado') {
+        valA = valA ? 1 : 0;
+        valB = valB ? 1 : 0;
+      } else if (ordemAtual.coluna === '_criado_em') {
+        valA = new Date(valA).getTime();
+        valB = new Date(valB).getTime();
+      } else {
+        valA = String(valA).toLowerCase();
+        valB = String(valB).toLowerCase();
+      }
+
+      if (valA < valB) return ordemAtual.direcao === 'asc' ? -1 : 1;
+      if (valA > valB) return ordemAtual.direcao === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
   return l;
 }
 
 function renderHistorico(){
-  lerFiltros();const l=filtrarHistorico(),b=document.getElementById('historyBody');
-  if(!l.length){b.innerHTML=`<tr><td colspan="6" class="history-empty">${getHistorico().length===0?'Nenhuma APAC salva ainda.':'Nenhum resultado com os filtros atuais.'}</td></tr>`;atualizarSelecionados();return}
+  lerFiltros();
+  const l = filtrarHistorico();
+  const b = document.getElementById('historyBody');
+
+  // Atualiza as setas do cabeçalho sem quebrar o estilo
+  const headers = document.querySelectorAll('.history-table th[data-sort]');
+  headers.forEach(th => {
+    const sortCol = th.getAttribute('data-sort');
+    const labelText = th.textContent.replace(/[↕↑↓]/g, '').trim(); // Limpa o texto base
+    let icon = ' ↕';
+    if (ordemAtual.coluna === sortCol) {
+      icon = ordemAtual.direcao === 'asc' ? ' ↑' : ' ↓';
+    }
+    th.innerHTML = `${labelText} <span style="opacity:0.6;font-size:10px;">${icon}</span>`;
+  });
+
+  if(!l.length){
+    b.innerHTML=`<tr><td colspan="6" class="history-empty">${getHistorico().length===0?'Nenhuma APAC salva ainda.':'Nenhum resultado com os filtros atuais.'}</td></tr>`;
+    atualizarSelecionados();
+    return;
+  }
+
   b.innerHTML=l.map(a=>`<tr data-id="${a._id}" onclick="abrirDetalhes('${a._id}')">
     <td style="color:var(--text-muted);font-size:12px">${formatarDataHora(a._criado_em)}</td>
     <td>${a.especialidade?`<span class="badge-esp ${classeEsp(a.especialidade)}">${a.especialidade}</span>`:'—'}</td>
     <td><strong>${a.nome_paciente||'—'}</strong></td>
     <td style="color:var(--text-muted)">${formatarCPF(a.cpf_paciente)||'—'}</td>
     <td><span class="status ${a._exportado?'status-exportado':'status-pendente'}">${a._exportado?'Exportado':'Pendente'}</span></td>
-        <td onclick="event.stopPropagation()">
+    <td onclick="event.stopPropagation()">
       <div style="display:flex;gap:8px">
         <button class="icon-btn btn-icon-neon btn-neon-primary" title="Ver" onclick="abrirDetalhes('${a._id}')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1789,6 +1862,19 @@ function renderHistorico(){
       </div>
     </td></tr>`).join('');
   atualizarSelecionados();
+}
+
+// Função para ativar a ordenação ao clicar no cabeçalho
+function ordenarTabela(coluna) {
+  if (ordemAtual.coluna === coluna) {
+    // Se já está ordenando por essa coluna, inverte a direção
+    ordemAtual.direcao = ordemAtual.direcao === 'asc' ? 'desc' : 'asc';
+  } else {
+    // Se é uma nova coluna, define ela e começa crescente
+    ordemAtual.coluna = coluna;
+    ordemAtual.direcao = 'asc';
+  }
+  renderHistorico();
 }
 
 function atualizarSelecionados(){ /* noop */ }
