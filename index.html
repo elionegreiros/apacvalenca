@@ -745,6 +745,25 @@ body.dark-mode .btn-setor { background: rgba(15, 23, 42, 0.6); }
 body.dark-mode .btn-setor:hover { background: rgba(15, 23, 42, 0.9); }
 body.dark-mode .btn-setor-text { color: #f8fafc; }
 .idade-badge{font-size:11px;color:var(--primary);font-weight:bold;background:var(--primary-light);padding:2px 6px;border-radius:4px}
+/* =========================================
+   PAGINAÇÃO DO HISTÓRICO
+   ========================================= */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding:10px 14px;background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--radius)}
+.pagination-info{font-size:12px;color:var(--text-muted);font-weight:500}
+.pagination-info strong{color:var(--text)}
+.pagination-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pagination-controls label{font-size:12px;color:var(--text-muted);margin-right:4px;font-weight:500}
+.pagination-controls select{padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;background:var(--surface);color:var(--text);cursor:pointer;height:30px}
+.pagination-controls select:focus{outline:none;border-color:var(--primary)}
+.page-btn{min-width:30px;height:30px;padding:0 8px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit}
+.page-btn:hover:not(:disabled){background:var(--primary-light);border-color:var(--primary);color:var(--primary)}
+.page-btn:disabled{opacity:.4;cursor:not-allowed}
+.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.page-btn.active:hover{background:var(--primary-hover);color:#fff}
+body.dark-mode .pagination-bar{background:#0f172a;border-color:var(--border)}
+body.dark-mode .pagination-controls select,body.dark-mode .page-btn{background:var(--surface);color:var(--text);border-color:var(--border-strong)}
+body.dark-mode .page-btn:hover:not(:disabled){background:var(--primary-light);color:var(--primary)}
+body.dark-mode .page-btn.active{background:var(--primary);color:#fff}
 </style>
 </head>
 <body>
@@ -936,7 +955,7 @@ body.dark-mode .btn-setor-text { color: #f8fafc; }
     <label>CEP <span class="req">*</span></label>
     <input type="text" id="f17" data-json="cep" data-mask="cep" maxlength="9" value="64300-000" required>
   </div>
-  <div class="field w-3">
+    <div class="field w-3">
     <label>Cód. Logradouro</label>
     <select id="fcdlogr" data-json="cod_logradouro">
       <option value="081">081 · Rua</option>
@@ -945,6 +964,9 @@ body.dark-mode .btn-setor-text { color: #f8fafc; }
       <option value="008">008 · Avenida</option>
     </select>
   </div>
+  <!-- Campos ocultos para o IBGE e UF -->
+  <input type="hidden" id="fibge" data-json="cod_ibge" value="2211308">
+  <input type="hidden" id="fuf" data-json="uf" value="PI">
   <div class="field w-full">
     <label>Endereço (Rua / Av.) <span class="req">*</span></label>
     <input type="text" id="f13" data-json="endereco" class="auto-upper" maxlength="30" required>
@@ -1147,6 +1169,22 @@ body.dark-mode .btn-setor-text { color: #f8fafc; }
             <tbody id="historyBody"><tr><td colspan="6" class="history-empty">Nenhuma APAC salva ainda.</td></tr></tbody>
           </table>
         </div>
+        <!-- ▼▼▼ PAGINAÇÃO ▼▼▼ -->
+        <div class="pagination-bar" id="paginationBar">
+          <div class="pagination-info" id="paginationInfo">Mostrando 0 de 0</div>
+          <div class="pagination-controls">
+            <label for="itensPorPagina">Itens por página:</label>
+            <select id="itensPorPagina" onchange="mudarItensPorPagina(this.value)">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+            </select>
+            <button class="page-btn" id="btnPagAnterior" onclick="mudarPagina(-1)" title="Página anterior">‹</button>
+            <span id="numerosPagina" style="display:flex;gap:4px;flex-wrap:wrap;"></span>
+            <button class="page-btn" id="btnPagProxima" onclick="mudarPagina(1)" title="Próxima página">›</button>
+          </div>
+        </div>
+        <!-- ▲▲▲ PAGINAÇÃO ▲▲▲ -->
       </div>
     </div>
   </div>
@@ -1756,6 +1794,14 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>most
    ========================================================= */
 let ordemAtual = { coluna: '_criado_em', direcao: 'desc' }; // Padrão: Data mais recente
 let filtroAtual={busca:'',status:'todos',periodo:'todos',especialidade:'todos'};
+// ▼▼▼ ESTADO DE PAGINAÇÃO ▼▼▼
+let paginaAtual = 1;
+let itensPorPagina = 10;
+
+function mudarItensPorPagina(valor){ itensPorPagina = parseInt(valor,10)||10; paginaAtual = 1; renderHistorico(); }
+function mudarPagina(delta){ paginaAtual += delta; renderHistorico(); }
+function irParaPagina(n){ paginaAtual = n; renderHistorico(); }
+function resetarPaginacao(){ paginaAtual = 1; }
 
 function lerFiltros(){
   filtroAtual.busca=(document.getElementById('searchInput')?.value||'').toLowerCase();
@@ -1831,7 +1877,7 @@ function renderHistorico(){
   const headers = document.querySelectorAll('.history-table th[data-sort]');
   headers.forEach(th => {
     const sortCol = th.getAttribute('data-sort');
-    const labelText = th.textContent.replace(/[↕↑↓]/g, '').trim(); // Limpa o texto base
+    const labelText = th.textContent.replace(/[↕↑↓]/g, '').trim();
     let icon = ' ↕';
     if (ordemAtual.coluna === sortCol) {
       icon = ordemAtual.direcao === 'asc' ? ' ↑' : ' ↓';
@@ -1839,29 +1885,81 @@ function renderHistorico(){
     th.innerHTML = `${labelText} <span style="opacity:0.6;font-size:10px;">${icon}</span>`;
   });
 
-  if(!l.length){
+  // ▼▼▼ LÓGICA DE PAGINAÇÃO ▼▼▼
+  const total = l.length;
+  const totalPaginas = Math.max(1, Math.ceil(total / itensPorPagina));
+
+  if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+  if (paginaAtual < 1) paginaAtual = 1;
+
+  const inicio = (paginaAtual - 1) * itensPorPagina;
+  const fim = inicio + itensPorPagina;
+  const paginaItens = l.slice(inicio, fim);
+
+  if(!paginaItens.length){
     b.innerHTML=`<tr><td colspan="6" class="history-empty">${getHistorico().length===0?'Nenhuma APAC salva ainda.':'Nenhum resultado com os filtros atuais.'}</td></tr>`;
-    atualizarSelecionados();
-    return;
+  } else {
+    b.innerHTML=paginaItens.map(a=>`<tr data-id="${a._id}" onclick="abrirDetalhes('${a._id}')">
+      <td style="color:var(--text-muted);font-size:12px">${formatarDataHora(a._criado_em)}</td>
+      <td>${a.especialidade?`<span class="badge-esp ${classeEsp(a.especialidade)}">${a.especialidade}</span>`:'—'}</td>
+      <td><strong>${a.nome_paciente||'—'}</strong></td>
+      <td style="color:var(--text-muted)">${formatarCPF(a.cpf_paciente)||'—'}</td>
+      <td><span class="status ${a._exportado?'status-exportado':'status-pendente'}">${a._exportado?'Exportado':'Pendente'}</span></td>
+      <td onclick="event.stopPropagation()">
+        <div style="display:flex;gap:8px">
+          <button class="icon-btn btn-icon-neon btn-neon-primary" title="Ver" onclick="abrirDetalhes('${a._id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="icon-btn btn-icon-neon btn-neon-warning" title="Editar" onclick="carregarNoFormulario('${a._id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+        </div>
+      </td></tr>`).join('');
   }
 
-  b.innerHTML=l.map(a=>`<tr data-id="${a._id}" onclick="abrirDetalhes('${a._id}')">
-    <td style="color:var(--text-muted);font-size:12px">${formatarDataHora(a._criado_em)}</td>
-    <td>${a.especialidade?`<span class="badge-esp ${classeEsp(a.especialidade)}">${a.especialidade}</span>`:'—'}</td>
-    <td><strong>${a.nome_paciente||'—'}</strong></td>
-    <td style="color:var(--text-muted)">${formatarCPF(a.cpf_paciente)||'—'}</td>
-    <td><span class="status ${a._exportado?'status-exportado':'status-pendente'}">${a._exportado?'Exportado':'Pendente'}</span></td>
-    <td onclick="event.stopPropagation()">
-      <div style="display:flex;gap:8px">
-        <button class="icon-btn btn-icon-neon btn-neon-primary" title="Ver" onclick="abrirDetalhes('${a._id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
-        <button class="icon-btn btn-icon-neon btn-neon-warning" title="Editar" onclick="carregarNoFormulario('${a._id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-      </div>
-    </td></tr>`).join('');
+  atualizarPaginacao(total, totalPaginas, inicio, fim);
   atualizarSelecionados();
+}
+
+// ▼▼▼ RENDER DA BARRA DE PAGINAÇÃO ▼▼▼
+function atualizarPaginacao(total, totalPaginas, inicio, fim) {
+  const info = document.getElementById('paginationInfo');
+  const btnAnt = document.getElementById('btnPagAnterior');
+  const btnProx = document.getElementById('btnPagProxima');
+  const nums = document.getElementById('numerosPagina');
+  const sel = document.getElementById('itensPorPagina');
+  if (!info) return;
+
+  if (sel && String(itensPorPagina) !== sel.value) sel.value = String(itensPorPagina);
+
+  if (total === 0) {
+    info.innerHTML = 'Nenhum registro';
+  } else {
+    const de = inicio + 1;
+    const ate = Math.min(fim, total);
+    info.innerHTML = `Mostrando <strong>${de}</strong>–<strong>${ate}</strong> de <strong>${total}</strong> registro(s)`;
+  }
+
+  btnAnt.disabled = paginaAtual <= 1;
+  btnProx.disabled = paginaAtual >= totalPaginas;
+
+  const paginasVisiveis = gerarPaginasVisiveis(paginaAtual, totalPaginas);
+  nums.innerHTML = paginasVisiveis.map(p => {
+    if (p === '...') return `<span class="page-btn" style="cursor:default;border:none;background:transparent;">…</span>`;
+    return `<button class="page-btn ${p === paginaAtual ? 'active' : ''}" onclick="irParaPagina(${p})">${p}</button>`;
+  }).join('');
+}
+
+function gerarPaginasVisiveis(atual, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const paginas = [1];
+  const ini = Math.max(2, atual - 1);
+  const fim = Math.min(total - 1, atual + 1);
+  if (ini > 2) paginas.push('...');
+  for (let i = ini; i <= fim; i++) paginas.push(i);
+  if (fim < total - 1) paginas.push('...');
+  paginas.push(total);
+  return paginas;
 }
 
 // Função para ativar a ordenação ao clicar no cabeçalho
@@ -1874,16 +1972,17 @@ function ordenarTabela(coluna) {
     ordemAtual.coluna = coluna;
     ordemAtual.direcao = 'asc';
   }
+  resetarPaginacao();
   renderHistorico();
 }
 
 function atualizarSelecionados(){ /* noop */ }
 
-function limparFiltros(){document.getElementById('searchInput').value='';document.getElementById('filterStatus').value='todos';document.getElementById('filterPeriodo').value='todos';document.getElementById('filterEspecialidade').value='todos';renderHistorico()}
-document.getElementById('searchInput')?.addEventListener('input',renderHistorico);
-document.getElementById('filterStatus')?.addEventListener('change',renderHistorico);
-document.getElementById('filterPeriodo')?.addEventListener('change',renderHistorico);
-document.getElementById('filterEspecialidade')?.addEventListener('change',renderHistorico);
+function limparFiltros(){document.getElementById('searchInput').value='';document.getElementById('filterStatus').value='todos';document.getElementById('filterPeriodo').value='todos';document.getElementById('filterEspecialidade').value='todos';resetarPaginacao();renderHistorico()}
+document.getElementById('searchInput')?.addEventListener('input',()=>{resetarPaginacao();renderHistorico()});
+document.getElementById('filterStatus')?.addEventListener('change',()=>{resetarPaginacao();renderHistorico()});
+document.getElementById('filterPeriodo')?.addEventListener('change',()=>{resetarPaginacao();renderHistorico()});
+document.getElementById('filterEspecialidade')?.addEventListener('change',()=>{resetarPaginacao();renderHistorico()});
 
 /* =========================================================
    MODAL DE DETALHES
@@ -1921,18 +2020,339 @@ function editarDoModal(){const id=modalIdAtual;fecharModal();if(id)carregarNoFor
 function pdfDoModal(){const ap=getHistorico().find(a=>a._id===modalIdAtual);if(ap)salvarAPACemPDF(ap)}
 function excelDoModal(){const ap=getHistorico().find(a=>a._id===modalIdAtual);if(ap)salvarAPACemExcel(ap)}
 
-function salvarAPACemPDF(dados){
-  dados=dados||coletarDados(); if(!window.jspdf){mostrarToast('Biblioteca PDF não carregada',true);return}
-  const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  doc.setFillColor(30,64,175);doc.rect(0,0,210,20,'F');doc.setTextColor(255,255,255);doc.setFontSize(13);doc.setFont(undefined,'bold');doc.text('APAC · Laudo para Solicitação/Autorização',14,9);doc.setFontSize(9);doc.setFont(undefined,'normal');doc.text('Ambulatório de Valença Centro · CNES 8531447',14,15);doc.setTextColor(0,0,0);
-  let y=28;
-  montarSecoes(dados).forEach(s=>{
-    doc.setFillColor(241,245,249);doc.rect(10,y,190,7,'F');doc.setTextColor(15,23,42);doc.setFontSize(9);doc.setFont(undefined,'bold');doc.text(s.titulo.toUpperCase(),12,y+5);y+=9;
-    doc.autoTable({head:[['Campo','Valor']],body:s.campos.map(c=>[c[1],c[2]||'—']),startY:y,margin:{left:10,right:10},styles:{fontSize:8,cellPadding:1.5,lineColor:[226,232,240],lineWidth:0.1},headStyles:{fillColor:[248,250,252],textColor:[71,85,105],fontStyle:'bold',fontSize:8},columnStyles:{0:{cellWidth:60,textColor:[100,116,139]},1:{cellWidth:130}},theme:'grid'});
-    y=doc.lastAutoTable.finalY+5;if(y>260){doc.addPage();y=20}
-  });
-  const tot=doc.internal.getNumberOfPages(); for(let i=1;i<=tot;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(148,163,184);doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')} · Página ${i}/${tot}`,105,290,{align:'center'})}
-  const nome=(dados.nome_paciente||'APAC').replace(/[^\w\s]/g,'').replace(/\s+/g,'_'); doc.save(`APAC_${nome}_${new Date().toISOString().slice(0,10)}.pdf`); mostrarToast('PDF gerado');
+function salvarAPACemPDF(dados) {
+  dados = dados || coletarDados();
+
+  if (!window.jspdf) {
+    mostrarToast('Biblioteca PDF não carregada', true);
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  // ==========================================================
+  // CONFIGURAÇÕES E AUXILIARES
+  // ==========================================================
+  const PAGE_W = 210;
+  const PAGE_H = 297;
+  const MARGIN = 10;
+  const CONTENT_W = 190;
+  const AZUL = [30, 64, 175];
+  const PRETO = [0, 0, 0];
+
+  doc.setTextColor(...PRETO);
+  doc.setDrawColor(...PRETO);
+  doc.setLineWidth(0.25);
+
+  function fonte(tamanho = 7, estilo = 'normal') {
+    doc.setFont('helvetica', estilo);
+    doc.setFontSize(tamanho);
+  }
+
+  function caixa(x, y, w, h) {
+    doc.rect(x, y, w, h);
+  }
+
+  function campo(x, y, w, h, label, valor = '', opcoes = {}) {
+    const align = opcoes.align || 'left';
+    const tamanhoValor = opcoes.tamanhoValor || 8;
+    caixa(x, y, w, h);
+    fonte(5.5, 'bold');
+    doc.text(String(label || '').toUpperCase(), x + 1, y + 3);
+
+    if (valor !== undefined && valor !== null && valor !== '') {
+      fonte(tamanhoValor, 'normal');
+      const texto = String(valor);
+      if (align === 'center') {
+        doc.text(texto, x + w / 2, y + h - 2, { align: 'center' });
+      } else if (align === 'right') {
+        doc.text(texto, x + w - 1, y + h - 2, { align: 'right' });
+      } else {
+        doc.text(texto, x + 1, y + h - 2);
+      }
+    }
+  }
+
+  function tituloSecao(texto, y) {
+    doc.setFillColor(255, 255, 255);
+    doc.setTextColor(...PRETO);
+    fonte(7, 'bold');
+    doc.text(texto.toUpperCase(), PAGE_W / 2, y, { align: 'center' });
+    return y + 4;
+  }
+
+  function caixaTexto(x, y, w, h, label, valor = '', tamanho = 7) {
+    caixa(x, y, w, h);
+    fonte(5.5, 'bold');
+    doc.text(label.toUpperCase(), x + 1, y + 3);
+    if (valor) {
+      fonte(tamanho, 'normal');
+      const linhas = doc.splitTextToSize(String(valor), w - 3);
+      doc.text(linhas, x + 1, y + 7);
+    }
+  }
+
+  function cabecalhoTabela(x, y, colunas, altura = 7) {
+    let posX = x;
+    colunas.forEach(col => {
+      caixa(posX, y, col.w, altura);
+      fonte(5.2, 'bold');
+      doc.text(col.label.toUpperCase(), posX + col.w / 2, y + 4.5, { align: 'center' });
+      posX += col.w;
+    });
+    return y + altura;
+  }
+
+  function linhaTabela(x, y, colunas, valores, altura = 7) {
+    let posX = x;
+    colunas.forEach((col, index) => {
+      caixa(posX, y, col.w, altura);
+      const valor = valores[index] || '';
+      fonte(col.tamanho || 6.5, 'normal');
+      const align = col.align || 'left';
+      if (align === 'center') {
+        doc.text(String(valor), posX + col.w / 2, y + altura - 2, { align: 'center' });
+      } else if (align === 'right') {
+        doc.text(String(valor), posX + col.w - 1, y + altura - 2, { align: 'right' });
+      } else {
+        doc.text(String(valor), posX + 1, y + altura - 2);
+      }
+      posX += col.w;
+    });
+    return y + altura;
+  }
+
+  // ==========================================================
+  // CABEÇALHO OFICIAL
+  // ==========================================================
+  let y = 10;
+
+  // Área esquerda
+  caixa(10, y, 60, 20);
+  doc.setTextColor(...AZUL);
+  fonte(9, 'bold');
+  doc.text('Ministério', 12, y + 7);
+  doc.text('da Saúde', 12, y + 12);
+
+  // Cruz SUS
+  doc.setFillColor(...AZUL);
+  doc.rect(36, y + 4, 4, 11, 'F');
+  doc.rect(32.5, y + 7.5, 11, 4, 'F');
+
+  fonte(14, 'bold');
+  doc.text('SUS', 45, y + 10);
+  fonte(4.5, 'normal');
+  doc.text('Sistema Único', 45, y + 14);
+  doc.text('de Saúde', 45, y + 17);
+
+  // Área direita
+  caixa(70, y, 130, 20);
+  fonte(19, 'bold');
+  doc.text('APAC', 73, y + 10);
+  fonte(7.5, 'normal');
+  doc.text('Autorização de Procedimentos Ambulatoriais', 105, y + 6);
+  doc.text('Laudo de Solicitação / Autorização', 105, y + 11);
+  fonte(6, 'normal');
+  doc.text('pg. 1/1', 198, y + 17, { align: 'right' });
+  doc.setTextColor(...PRETO);
+
+  y = 36;
+
+  // ==========================================================
+  // 1. IDENTIFICAÇÃO DO ESTABELECIMENTO
+  // ==========================================================
+  y = tituloSecao('IDENTIFICAÇÃO DO ESTABELECIMENTO DE SAÚDE (SOLICITANTE)', y);
+  campo(10, y, 155, 10, 'Nome do Estabelecimento de Saúde Solicitante', dados.estabelecimento_solicitante || UNIDADE.nome, { tamanhoValor: 7 });
+  campo(165, y, 35, 10, 'CNES', dados.cnes_solicitante || UNIDADE.cnes_solicitante, { align: 'center' });
+  y += 13;
+
+  // ==========================================================
+  // 2. IDENTIFICAÇÃO DO PACIENTE
+  // ==========================================================
+  y = tituloSecao('IDENTIFICAÇÃO DO PACIENTE', y);
+  campo(10, y, 155, 10, 'Nome do Paciente', dados.nome_paciente, { tamanhoValor: 7.5 });
+  campo(165, y, 35, 10, 'Nº do Prontuário', dados.prontuario || '', { align: 'center' });
+  y += 10;
+
+  campo(10, y, 70, 10, 'Cartão Nacional de Saúde (CNS) / CPF', formatarCPF(dados.cpf_paciente), { tamanhoValor: 7.5 });
+  campo(80, y, 30, 10, 'Data de Nascimento', formatarData(dados.data_nascimento), { align: 'center', tamanhoValor: 7 });
+  campo(110, y, 20, 10, 'Sexo', formatarSexo(dados.sexo), { align: 'center', tamanhoValor: 7 });
+    // Adicionamos essa linha antes do campo Raça/Cor para garantir que puxe o nome
+  let racaTexto = formatarRaca(dados.raca_cor);
+  campo(130, y, 35, 10, 'Raça/Cor', racaTexto, { align: 'center', tamanhoValor: 6.5 });
+  campo(165, y, 35, 10, 'Etnia', dados.etnia || '', { align: 'center', tamanhoValor: 6.5 });
+  y += 10;
+
+  campo(10, y, 145, 10, 'Nome da Mãe', dados.nome_mae, { tamanhoValor: 7.5 });
+  campo(155, y, 10, 10, 'DDD', dados.telefone1_ddd || '', { align: 'center' });
+  campo(165, y, 35, 10, 'Nº do Telefone', dados.telefone1_num || '', { align: 'center' });
+  y += 10;
+
+  campo(10, y, 145, 10, 'Nome do Responsável', dados.nome_responsavel || '', { tamanhoValor: 7.5 });
+  campo(155, y, 10, 10, 'DDD', dados.telefone2_ddd || '', { align: 'center' });
+  campo(165, y, 35, 10, 'Nº do Telefone', dados.telefone2_num || '', { align: 'center' });
+  y += 10;
+
+    campo(10, y, 190, 10, 'CNS do Profissional Solicitante', dados.cns_especialista || document.getElementById('fcnsEsp')?.value || '', { tamanhoValor: 7.5 });
+  y += 10;
+
+  campo(10, y, 105, 10, 'Município de Residência', 'Valença do Piauí', { tamanhoValor: 7.5 });
+  campo(115, y, 35, 10, 'Cód. IBGE Município', '2211308', { align: 'center', tamanhoValor: 6.5 });
+  campo(150, y, 15, 10, 'UF', 'PI', { align: 'center' });
+  campo(165, y, 35, 10, 'CEP', formatarCEP(dados.cep), { align: 'center' });
+  y += 13;
+
+  // ==========================================================
+  // 3. PROCEDIMENTO PRINCIPAL
+  // ==========================================================
+  y = tituloSecao('PROCEDIMENTO(S) SOLICITADO(S)', y);
+  fonte(6, 'bold');
+  doc.text('PROCEDIMENTO SOLICITADO', PAGE_W / 2, y, { align: 'center' });
+  y += 3;
+
+  const colPrincipal = [
+    { label: 'Código do Procedimento Principal', w: 35, align: 'center' },
+    { label: 'Serviço', w: 18, align: 'center' },
+    { label: 'Class.', w: 18, align: 'center' },
+    { label: 'Nome do Procedimento Principal', w: 99 },
+    { label: 'Qtde.', w: 20, align: 'center' }
+  ];
+
+  y = cabecalhoTabela(10, y, colPrincipal, 8);
+  
+  // Puxando o Nome do input oculto do formulário
+    // Busca o nome do procedimento 1 usando a base de regras (garante que funcione no Histórico também)
+  const nomeProc1 = REGRAS_PROCEDIMENTOS[dados.especialidade_key]?.proc_1?.nome || document.getElementById('f18_nome')?.value || '';
+
+  y = linhaTabela(10, y, colPrincipal, [
+      dados.proc_1_codigo || '', 
+      '', 
+      '', 
+      nomeProc1, 
+      dados.proc_1_qtd || '1'
+  ], 10);
+
+  y += 5;
+
+  // ==========================================================
+  // 4. PROCEDIMENTOS SECUNDÁRIOS
+  // ==========================================================
+  y = tituloSecao('PROCEDIMENTO(S) SOLICITADO(S) SECUNDÁRIO(S)', y);
+
+  const colSecundario = [
+    { label: 'Código do Procedimento Secundário', w: 50, align: 'center' },
+    { label: 'Nome do Procedimento Secundário', w: 120 },
+    { label: 'Qtde.', w: 20, align: 'center' }
+  ];
+
+  y = cabecalhoTabela(10, y, colSecundario, 8);
+
+  const regra = REGRAS_PROCEDIMENTOS[dados.especialidade_key] || {};
+  const nomeProc2 = regra.proc_2?.nome || document.getElementById('f21_nome')?.value || '';
+  const nomeProc3 = regra.proc_3_fixo?.nome || document.getElementById('f24_nome')?.value || '';
+  
+  let nomeProc4 = '';
+  if (regra.opcoes_proc_3 && dados.proc_4_codigo) {
+    const opc = regra.opcoes_proc_3.find(o => o.cod === dados.proc_4_codigo);
+    if (opc) nomeProc4 = opc.nome;
+  }
+
+  const secundarios = [
+    { cod: dados.proc_2_codigo, qtd: dados.proc_2_qtd, nome: nomeProc2 },
+    { cod: dados.proc_3_codigo, qtd: dados.proc_3_qtd, nome: nomeProc3 },
+    { cod: dados.proc_4_codigo, qtd: dados.proc_4_qtd, nome: nomeProc4 }
+  ];
+
+  // Desenha 3 linhas (padrão do papel), preenche se tiver
+  for (let i = 0; i < 3; i++) {
+    const p = secundarios[i] || {};
+    y = linhaTabela(10, y, colSecundario, [
+      p.cod || '',
+      p.nome || '',
+      p.qtd || ''
+    ], 7);
+  }
+
+  y += 5;
+
+  // ==========================================================
+  // 5. JUSTIFICATIVA
+  // ==========================================================
+  y = tituloSecao('JUSTIFICATIVA DO(S) PROCEDIMENTO(S) SOLICITADO(S)', y);
+
+    const colCID = [
+    { label: 'Descrição do Diagnóstico', w: 100 },
+    { label: 'CID10 Principal', w: 30, align: 'center' },
+    { label: 'CID10 Secundário', w: 30, align: 'center' },
+    { label: 'CID10 Causas Associadas', w: 30, align: 'center' }
+  ];
+
+  y = cabecalhoTabela(10, y, colCID, 8);
+  y = linhaTabela(10, y, colCID, [
+      '', 
+      dados.cid_principal || '',
+      '',
+      ''
+  ], 8); // Era 12, agora é 8
+
+  y += 2; // Era 3, agora é 2
+
+  // ==========================================================
+  // 6. OBSERVAÇÕES
+  // ==========================================================
+  caixaTexto(10, y, 190, 14, 'Observações', dados.observacoes || '', 6.5); // Era 20, agora é 14
+  y += 16; // Era 23, agora é 16
+
+  // ==========================================================
+  // 7. SOLICITAÇÃO
+  // ==========================================================
+  y = tituloSecao('SOLICITAÇÃO', y);
+  
+  campo(10, y, 105, 10, 'Nome do Profissional Solicitante', dados.profissional_solicitante || '', { tamanhoValor: 7 });
+  campo(115, y, 30, 10, 'Data da Solicitação', formatarData(new Date().toISOString().split('T')[0].replace(/-/g,'')), { align: 'center', tamanhoValor: 6.5 });
+  campo(145, y, 55, 10, 'Assinatura e Carimbo (Registro do Conselho)', '', { tamanhoValor: 6 });
+  y += 10;
+
+    campo(10, y, 190, 10, 'CNS do Profissional Solicitante', document.getElementById('fcnsEsp').value || '', { tamanhoValor: 7.5 });
+  y += 10;
+
+  // ==========================================================
+    // ==========================================================
+  // 8. AUTORIZAÇÃO
+  // ==========================================================
+  y = tituloSecao('AUTORIZAÇÃO', y);
+
+  campo(10, y, 105, 10, 'Nome do Profissional Autorizador', dados.profissional_autorizador || '', { tamanhoValor: 7 });
+  campo(115, y, 40, 10, 'Cód. Órgão Emissor', '03', { align: 'center', tamanhoValor: 6.5 });
+  campo(155, y, 45, 10, 'Nº da Autorização (APAC)', dados.numero_apac || '', { align: 'center', tamanhoValor: 7 });
+  y += 10; // Era 12, virou 10
+
+  campo(10, y, 190, 8, 'CNS do Profissional Autorizador', AUTORIZADOR.cns || '', { tamanhoValor: 7.5 }); // Era 10, virou 8
+  y += 10; // Era 10, virou 10 (esse ta bom)
+
+  campo(10, y, 30, 10, 'Data da Autorização', formatarData(new Date().toISOString().split('T')[0].replace(/-/g,'')), { align: 'center', tamanhoValor: 6.5 }); // Era 12, virou 10
+  campo(40, y, 90, 10, 'Assinatura e Carimbo (Nº do Registro do Conselho)', '', { tamanhoValor: 6 }); // Era 12, virou 10
+  campo(130, y, 35, 10, 'Período de Validade da APAC', '', { align: 'center', tamanhoValor: 6 }); // Era 12, virou 10
+  campo(165, y, 35, 10, 'a', '', { align: 'center', tamanhoValor: 6 }); // Era 12, virou 10
+
+  // ==========================================================
+    // ==========================================================
+  // RODAPÉ
+  // ==========================================================
+  fonte(5.5, 'normal');
+  doc.text('Laudo de Solicitação / Autorização - APAC', 10, PAGE_H - 8);
+  doc.text('pg. 1/1', 200, PAGE_H - 8, { align: 'right' });
+
+  // ==========================================================
+  // SALVAR
+  // ==========================================================
+  const nomeArquivo = `APAC_${dados.nome_paciente || 'paciente'}`
+      .replace(/[^\w\-À-ÿ ]/g, '')
+      .replace(/\s+/g, '_');
+
+  doc.save(`${nomeArquivo}.pdf`);
+  mostrarToast('PDF gerado no modelo oficial!');
 }
 
 const COLS_EXCEL=[
