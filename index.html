@@ -1214,12 +1214,15 @@ body.dark-mode .page-btn.active{background:var(--primary);color:#fff}
    ========================================================= */
 const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbxb4vp_SsstwNFzW_J__JHyUWbhr_FgTNeY_9kYTOeJUsRsyTlAmTZryLuG__fAISFi/exec';
 
+// Chave secreta: precisa ser IGUAL a CHAVE_API no Apps Script.
+const CHAVE_API = 'MdT8jBQr6aFo2BJTI0VYhQ5lS8R_dsh_';
+
 const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531447', cnes_executante: '8531447', nome_executante: 'AMBULATORIO DE VALENCA CENTRO' };
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
 
 const REGRAS_PROCEDIMENTOS = {
-    'cardiologia_avaliacao': {
-    nome: 'JULIANA ALVES DOS REIS SOBREIRA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120', cid_fixo: 'Z136',
+    'cardiologia_risco': {
+    nome: 'JULIANA ALVES DOS REIS E SILVA', especialidade: 'Cardiologia', cns: '706408698533884', cbo: '225120', cid_fixo: 'Z136',
     proc_1: { cod: '0902010018', nome: 'OCI AVALIACAO DE RISCO CIRURGICO', qtd: 1 },
     proc_2: { cod: '0301010072', nome: 'CONSULTA MEDICA EM ATENCAO ESPECIALIZADA', qtd: 2 },
     proc_3_fixo: null,
@@ -2402,7 +2405,7 @@ async function sincronizarComSheets(dados, acao){
       numero_apac: dados.numero_apac || "", cid_principal: dados.cid_principal
     };
 
-    const pacote = { acao: acao, dados: payload };
+    const pacote = { acao: acao, dados: payload, chave: CHAVE_API };
 
     await fetch(url, {
       method: 'POST',
@@ -2438,7 +2441,7 @@ async function puxarDoSheets() {
         document.body.removeChild(script);
         resolve(response);
       };
-      script.src = url + '?acao=listar&callback=' + callbackName;
+      script.src = url + '?acao=listar&callback=' + callbackName + '&chave=' + encodeURIComponent(CHAVE_API);
       script.onerror = () => {
         delete window[callbackName];
         document.body.removeChild(script);
