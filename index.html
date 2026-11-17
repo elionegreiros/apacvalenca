@@ -1214,8 +1214,25 @@ body.dark-mode .page-btn.active{background:var(--primary);color:#fff}
    ========================================================= */
 const MINHA_URL_SHEETS = 'https://script.google.com/macros/s/AKfycbxb4vp_SsstwNFzW_J__JHyUWbhr_FgTNeY_9kYTOeJUsRsyTlAmTZryLuG__fAISFi/exec';
 
-// Chave secreta: precisa ser IGUAL a CHAVE_API no Apps Script.
-const CHAVE_API = 'MdT8jBQr6aFo2BJTI0VYhQ5lS8R_dsh_';
+// Não há mais chave secreta neste arquivo: o login (usuário e senha) é conferido pelo Apps Script.
+// Os usuários são cadastrados na planilha, menu "⚙️ APAC > Cadastrar/alterar usuário do site".
+function credenciais(){ return { usuario: sessionStorage.getItem('apac_usuario') || '', senha: sessionStorage.getItem('apac_senha') || '' }; }
+
+// Chama o Apps Script e devolve a resposta em JSON.
+async function chamarApi(corpo){
+  const r = await fetch(getSheetsUrl(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // "text/plain" evita a checagem prévia de CORS
+    body: JSON.stringify(Object.assign({}, corpo, credenciais()))
+  });
+  const j = await r.json();
+  if (j && j.login === false && corpo.acao !== 'login') {   // senha trocada/removida ou sessão inválida
+    sessionStorage.removeItem('apac_logado'); sessionStorage.removeItem('apac_senha');
+    alert('Sua sessão não é mais válida: ' + (j.mensagem || '') + '\nEntre novamente.');
+    location.reload();
+  }
+  return j;
+}
 
 const UNIDADE = { nome: 'AMBULATORIO DE VALENCA CENTRO', cnes_solicitante: '8531447', cnes_executante: '8531447', nome_executante: 'AMBULATORIO DE VALENCA CENTRO' };
 const AUTORIZADOR = { nome: 'JARBAS NOGUEIRA MATIAS', cns: '700509998690951', cpf: '09629343304', cbo: '225125', tipo_doc: 'CNS' };
@@ -2405,19 +2422,25 @@ async function sincronizarComSheets(dados, acao){
       numero_apac: dados.numero_apac || "", cid_principal: dados.cid_principal
     };
 
-    const pacote = { acao: acao, dados: payload, chave: CHAVE_API };
-
-    await fetch(url, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(pacote)
-    });
-
-    if(acao === 'criar'){
-      alert(`✅ APAC salva e enviada para a nuvem!\n\n(Confira a planilha para ver o código APAC gerado)`);
+    let resp;
+    try {
+      resp = await chamarApi({ acao: acao, dados: payload });
+    } catch (e) {
+      // Sem resposta legível: se estiver sem internet, falhou; senão o envio pode ter chegado.
+      if (!navigator.onLine) throw e;
+      console.warn('Resposta da nuvem não pôde ser lida:', e);
+      if (acao === 'criar') alert('⚠️ APAC enviada, mas a nuvem não confirmou o recebimento.\nConfira na planilha antes de enviar de novo.');
+      return true;
     }
 
+    if (resp.status !== 'sucesso') {
+      alert('❌ A nuvem recusou a operação:\n\n' + (resp.mensagem || 'erro desconhecido'));
+      return false;
+    }
+    if (acao === 'criar') {
+      dados.codigos_apac = resp.cod_apac || '';
+      alert(`✅ APAC salva na nuvem!\n\nCódigo APAC: ${resp.cod_apac || '(veja a planilha)'}\nLinha da planilha: ${resp.linha_utilizada}`);
+    }
     return true;
   } catch(e){
     console.error('Falha de rede no envio:', e);
@@ -2432,25 +2455,9 @@ async function puxarDoSheets() {
   mostrarToast('Buscando dados da nuvem...');
 
   try {
-    const script = document.createElement('script');
-    const callbackName = 'jsonpCallback_' + Date.now();
-
-    const data = await new Promise((resolve, reject) => {
-      window[callbackName] = (response) => {
-        delete window[callbackName];
-        document.body.removeChild(script);
-        resolve(response);
-      };
-      script.src = url + '?acao=listar&callback=' + callbackName + '&chave=' + encodeURIComponent(CHAVE_API);
-      script.onerror = () => {
-        delete window[callbackName];
-        document.body.removeChild(script);
-        reject(new Error('Falha ao carregar os dados da nuvem.'));
-      };
-      document.body.appendChild(script);
-    });
-
-    if (!data.ok) throw new Error(data.error || 'Resposta inválida');
+    // A listagem exige login e vai por POST (o antigo JSONP com a chave na URL foi removido).
+    const data = await chamarApi({ acao: 'listar' });
+    if (!data.ok) throw new Error(data.mensagem || data.error || 'Resposta inválida');
 
     const rem = data.apacs || [];
     const loc = getHistorico(); // Aqui vai estar vazio (limpamos no init)
@@ -2497,17 +2504,22 @@ function mostrarToast(m,e=false){ const t=document.getElementById('toast');t.tex
 /* =========================================================
    LOGIN
    ========================================================= */
-const USUARIOS_SISTEMA = {
-  'digitador': 'admin',
-  'admin': 'admin'
-};
-
-function fazerLogin() {
-  const user = document.getElementById('loginUser').value.trim();
+// O usuário e a senha são conferidos pelo Apps Script (as senhas não ficam mais neste arquivo).
+async function fazerLogin() {
+  const user = document.getElementById('loginUser').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
   const erro = document.getElementById('loginErro');
 
-  if (USUARIOS_SISTEMA[user] && USUARIOS_SISTEMA[user] === pass) {
+  let resp;
+  try {
+    sessionStorage.setItem('apac_usuario', user);
+    sessionStorage.setItem('apac_senha', pass);
+    resp = await chamarApi({ acao: 'login' });
+  } catch (e) {
+    resp = { login: false, mensagem: 'Não foi possível falar com a nuvem. Verifique a internet.' };
+  }
+
+  if (resp && resp.login === true) {
     // 1. LIMPEZA DE CACHE
     localStorage.removeItem(HIST_KEY);
     localStorage.removeItem(RASC_KEY);
@@ -2529,6 +2541,8 @@ function fazerLogin() {
     // 2. PUXA A NUVEM (com um pequeno delay para garantir que a tela carregou)
     setTimeout(() => { puxarDoSheets(); }, 1000);
   } else {
+    sessionStorage.removeItem('apac_senha');
+    erro.textContent = (resp && resp.mensagem) || 'Usuário ou senha incorretos.';
     erro.style.display = 'block';
     document.getElementById('loginPass').value = '';
   }
@@ -2592,7 +2606,9 @@ function fazerLogout() {
     localStorage.removeItem(LAST_SYNC_KEY);
     sessionStorage.removeItem('apac_logado');
     sessionStorage.removeItem('apac_setor');
-    
+    sessionStorage.removeItem('apac_usuario');
+    sessionStorage.removeItem('apac_senha');
+
     document.getElementById('btnTrocarSetor').style.display = 'none';
     document.getElementById('btnSair').style.display = 'none';
 
